@@ -1,25 +1,109 @@
-import logo from './logo.svg';
-import './App.css';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Login from "./pages/Login";
+import Home from "./pages/Home";
+import Product from "./pages/Product";
+// import Login from "./componets/login"
+import ProductDetail from "./pages/ProductDetail";
+import UserDetail from "@/pages/UserDetail";
+import Mapping from "@/pages/EditMapping";
+import Custormer from "./pages/Custormer";
+import Firmware from "./pages/firmwareDetail";
+import UpgradeBatch from "./pages/upgradeBatch";
+import UpgradeBatchDetail from "./pages/upgradeBatch/upgradeBatchDatail";
+import Device from "@/pages/device"
+
+import { OrganizationContextProvider } from "@/context/Organization";
+import { AuthProvider } from "@/context/AuthContext";
+import { ProductContextProvider } from "@/context/Product";
+import { UserContextProvider } from "@/context/User";
+import { CustormerContextProvider } from "./context/Custormer";
+import { FirmwareContextProvider } from "./context/firmware";
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <OrganizationContextProvider>
+        <AuthProvider>
+          <ProductContextProvider>
+            <UserContextProvider>
+              <CustormerContextProvider>
+                <FirmwareContextProvider>
+                  <Routes>
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/" element={<Home />} />
+                    <Route path="/product" element={<Product />} />
+                    <Route
+                      path="/product/:productId"
+                      element={<ProductDetail />}
+                    />
+                    <Route path="/user/:userId" element={<UserDetail />} />
+                    <Route
+                      path="/product/:productId/mapping/edit"
+                      element={<Mapping />}
+                    ></Route>
+
+                    <Route
+                      path="/product/:productId/custormer"
+                      element={<Custormer />}
+                    ></Route>
+                    <Route
+                      path="/product/:productId/firmware/:firmwareId"
+                      element={<Firmware></Firmware>}
+                    ></Route>
+                    <Route
+                      path="/product/:productId/firmware/:firmwareId/upgrade"
+                      element={<UpgradeBatch></UpgradeBatch>}
+                    ></Route>
+                    <Route
+                      path="/product/:productId/firmware/:firmwareId/upgradebatch/:batchId"
+                      element={<UpgradeBatchDetail></UpgradeBatchDetail>}
+                    ></Route>
+                    <Route path="/device" element={<Device />} />
+                  </Routes>
+                </FirmwareContextProvider>
+              </CustormerContextProvider>
+            </UserContextProvider>
+          </ProductContextProvider>
+        </AuthProvider>
+      </OrganizationContextProvider>
+    </Router>
   );
 }
 
 export default App;
+
+//* day 1
+// todo 页面切换导航，api代码编写，done
+//todo 检查Authorization请求头是否设置好 done
+// todo 选择好组织后，显示该组织的主页内容，并设置context 组织id done
+// todo 考虑错误信息弹窗编写 done
+
+//* day 2
+//todo 登录状态编写：考虑先采用是否存在token来判断是否登录
+//todo 产品页编写
+//todo 点击进去页面最顶部使用导航栏
+
+//* day3
+//todo 调整样式：看看移动端怎么调宽度 使用Less编写
+//todo 看后端文档，找合适接口
+//todo
+
+//* day4
+//todo 看api文档，看哪个url对应哪个 done
+//todo 编写侧栏和添加组织，看需要添加什么信息  给input框加上必选项
+//todo 添加成员信息需要哪些、showInfo有哪些
+//todo 进行产品页的开发
+
+//* day5
+//todo 将产品页的弹窗调整
+//todo 考虑搜索栏怎么调试 -->跟原应用一样就行
+//todo 将点击的tr列表做成一个详情页
+//todo 设计admin/
+
+//* day6
+//todo 数据解析页的没写完
+//todo 后面还有四个没写完明天写完
+//todo api读懂
+
+//* day7
+//todo 产品客户页的删除功能

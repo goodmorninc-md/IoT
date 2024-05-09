@@ -1,0 +1,8 @@
+.font{
+    font-size: 30px;
+    text-align: center;
+}
+.demo-input-icon {
+    display: flex;
+    align-items: center;
+}

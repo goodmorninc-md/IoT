@@ -1,0 +1,138 @@
+@bgColor: skyblue;
+@BuBgColor: transparent;
+.ps {
+  // position: flex;
+  display: inline-flex;
+  width: 100%;
+  align-items: center;
+  margin: 0.5rem 0rem 0rem 0rem;
+}
+.Bu {
+  width: 30%;
+  display: inline-flex;
+  align-items: center;
+  font-weight: bold;
+}
+.sideBar {
+  width: 15%;
+}
+.spacer {
+  display: inline-flex;
+  width: 80%; /* 占据剩余空间 */
+  justify-content: center;
+}
+.cellGroup {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+}
+.myCell {
+  margin: 0.5rem 0.2rem 0rem 0.2rem;
+  height: 2rem;
+  padding-top: 0.5rem;
+  border: 0.01rem solid rgb(83, 228, 138);
+  // display: flex;
+}
+.cellText {
+  text-align: center;
+}
+.cellTextIcon {
+  width: 1rem;
+  height: 1rem;
+  margin-left: 0.5rem;
+}
+.Cell-label-icon{
+  width: 1.5rem;
+  height: 1.5rem;
+  margin-left: 0.5rem;
+}
+.cellIconAndText {
+  display: flex;
+  align-items: center;
+}
+
+.content {
+  font-size: 0.7rem;
+  color: black;
+}
+.InfoCellGroup {
+  color: black;
+  font-size: 0.5rem;
+}
+
+.table {
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* 垂直排列表格的所有子元素（thead 和 tbody） */
+  font-size: 0.5rem;
+}
+.TrTable {
+  display: flex;
+  width: 100%;
+}
+.TrTable th,
+.TrTable td {
+  flex: 1; /* 让所有表头和表格数据单元格平均分配空间 */
+  text-align: center; /* 文本居中 */
+  // padding: 10px 0; /* 增加一些垂直填充 */
+}
+.PopupButtons {
+  width: 100%;
+  display: inline-flex;
+  justify-content: space-around;
+  align-items: center;
+  color:#ff0000
+}
+tbody {
+  width: 100%;
+  display: flex;
+  flex-direction: column; /* 使 tbody 内的 tr 项目垂直排列 */
+}
+
+thead > tr {
+  width: 90%;
+  display: flex;
+  justify-content: center; /* 将行内元素居中 */
+  margin: 0.3rem;
+}
+tbody > tr {
+  border: 0.01rem solid rgb(83, 228, 138);
+  display: flex;
+  justify-content: center; /* 将行内元素居中 */
+  flex-wrap: wrap;
+  margin: 0.2rem;
+}
+
+td {
+  flex: 1; /* 使所有数据单元格均等宽度 */
+  text-align: center; /* 居中对齐单元格内的文本 */
+  padding: 8px 0; /* 增加填充 */
+}
+.tabsControl {
+  display: inline-flex;
+  margin-top: 0.3rem;
+}
+.tabs {
+  // width: 70%;
+  font-size: 1rem;
+}
+
+.iconInfoFpage {
+  width: 0.4rem;
+  height: 0.4rem;
+}
+.iconInfo {
+  width: 0.7rem;
+  height: 0.7rem;
+}
+
+//
+.arco-tab-cell {
+  font-size: 0.5rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  text-align: center;
+}
