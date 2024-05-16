@@ -24,15 +24,19 @@ import "@/styles/home.less";
 import "@/styles/product.less";
 
 import MyRadio from "./Radio";
+import { GetProductListByOrg } from "@/services/Product";
 const keys = ["名称", "类型", "描述"];
 const keysInEng = ["name", "type", "description"];
 
 export default function ProductList({}) {
   const { currentProduct, setCurrentProduct, productList, setProductList } =
     useContext(ProductContext);
+
   const Navigate = useNavigate();
   //* 需要一个record来记录之前的内容
   const [record, setRecord] = useState({});
+
+
   const handleChangeProduct = (data) => {
     const newProductList = productList.map((e) => {
       if (e.id === data.id) return data;
@@ -40,7 +44,6 @@ export default function ProductList({}) {
     });
     setProductList(newProductList);
   };
-
 
   const handleNavigate = (productId) => {
     Navigate(`/product/${productId}`);

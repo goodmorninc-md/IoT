@@ -57,13 +57,15 @@ export default function Firmware({}) {
   const { currentProduct } = useContext(ProductContext);
   const location = useLocation();
   const url = window.location.href;
-  const list = url.split("/")
-  const firmwareId = list.slice(-1)[0];
+  const list = url.split("/").reverse()
+  console.log(list)
+  const firmwareId = list[0];
+  const productId = list[2]
   // const productId = list[]
 
   //* 获取该硬件数据
   useEffect(() => {
-    ShowDetailOfFirmware(currentProduct.id, firmwareId).then((data) => {
+    ShowDetailOfFirmware(productId, firmwareId).then((data) => {
       setCurrentFirmware(data);
     });
   }, []);
@@ -75,7 +77,7 @@ export default function Firmware({}) {
         LeftChildren={
           <Button
             onClick={() =>
-              navigate(`/product/${currentProduct.id}?tab=firmware`)
+              navigate(`/product/${productId}?tab=firmware`)
             }
           >
             返回

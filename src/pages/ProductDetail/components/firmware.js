@@ -23,11 +23,16 @@ const DelColorConfig = {
 
 export default function Firmware() {
   const [firmwareList, setFirmwareList] = useState([]);
-  const { currentProduct } = useContext(ProductContext);
-  const {setCurrentFirmware} = useContext(FirmwareContext)
+
+  
+  const { setCurrentFirmware } = useContext(FirmwareContext);
   const navigate = useNavigate();
+  const url = window.location.href;
+  const productId = url.split("/").reverse()[0].split("?")[0];
+  if(productId === undefined) navigate("/product")
+  console.log(productId);
   useEffect(() => {
-    GetFirmwareList(currentProduct.id).then((data) => {
+    GetFirmwareList(productId).then((data) => {
       setFirmwareList(data);
     });
   }, []);
@@ -40,8 +45,8 @@ export default function Firmware() {
           {data.name}
           <Button
             onClick={() => {
-              setCurrentFirmware(data)
-              navigate(`/product/${currentProduct.id}/firmware/${data.id}`);
+              setCurrentFirmware(data);
+              navigate(`/product/${productId}/firmware/${data.id}`);
             }}
             style={{ width: "30%" }}
           >
@@ -53,6 +58,7 @@ export default function Firmware() {
           <Button
             style={{ width: "30%", alignItems: "center" }}
             onClick={() => handleDelete(data.id)}
+            bgColor={DelColorConfig}
           >
             删除
           </Button>

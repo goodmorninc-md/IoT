@@ -11,6 +11,7 @@ import { ChangeUserInfo, DelUser } from "@/services/User";
 import CreateOrg from "@/components/PopupSwiper/CreateOrg";
 import Info from "@/components/PopupSwiper/Update.js";
 import { useNavigate } from "react-router-dom";
+import{ ReactComponent as IconUser} from "@/assets/icon/addUser.svg"
 const User = ({ currentSelect }) => {
   //** 需要一个record State来记录当前修改的信息，如果通过ref传给子组件，子组件不能对父组件进行修改 */
   //* 想通过UserList向父组件传信息，但是
@@ -29,7 +30,7 @@ const User = ({ currentSelect }) => {
   const navigate = useNavigate();
   //* 选择成员信息时，请求成员信息
   useEffect(() => {
-    ListUsers(token,current_Organization).then((data) => {
+    ListUsers(token,current_Organization.id).then((data) => {
       // console.log(data);
       setUsersList(data);
     });
@@ -85,6 +86,8 @@ const User = ({ currentSelect }) => {
           addData={addData.current}
           handleConfirm={handleAddUserConfirm}
           content={"添加成员"}
+          className={"tab-firstP-button"}
+          icon={<IconUser />}
         >
           {dataListMap}
         </CreateOrg>
@@ -106,6 +109,8 @@ const User = ({ currentSelect }) => {
 };
 
 export default User;
+
+
 
 function originFunction() {
   // const keys = ["姓名", "邮箱", "电话", "role", "性别"];

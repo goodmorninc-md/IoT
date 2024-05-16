@@ -21,15 +21,12 @@ const EditOrganization = ({ currentSelect }) => {
 
   const {
     current_Organization,
-    setCurrentOrganization,
-    OrganizationList,
-    setOrganizationList,
   } = useContext(OrganizationContext);
 
   useEffect(() => {
     //* 组织变化，信息页一起修改
     console.log("eff");
-    GetOneOrganization(current_Organization, token).then((data) => {
+    GetOneOrganization(current_Organization.id, token).then((data) => {
       setOrganizationInfo(data);
 
       //* 获得信息更改
@@ -40,7 +37,7 @@ const EditOrganization = ({ currentSelect }) => {
   function handleInfoChange(e) {
     //发起网络请求
 
-    UpdateOneOrganization(current_Organization, token, NowOrganiationInfo).then(
+    UpdateOneOrganization(current_Organization.id, token, NowOrganiationInfo).then(
       (data) => {
         setOrganizationInfo(NowOrganiationInfo);
         setEditStatus(!editStatus);
@@ -60,6 +57,7 @@ const EditOrganization = ({ currentSelect }) => {
   };
   return (
     <>
+    
       <Button
         icon={<ChangeInfoIcon className="iconInfo" />}
         bgColor={bgColor}
@@ -67,7 +65,7 @@ const EditOrganization = ({ currentSelect }) => {
           setEditStatus(!editStatus);
         }}
         color={colorConfig}
-        className="Bu"
+        className="tab-firstP-button"
       >
         编辑
       </Button>

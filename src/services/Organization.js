@@ -1,6 +1,8 @@
 import { OrganizationContext } from "@/context/Organization";
 import axios from "axios";
 import { API_URL } from "./Data";
+const token = localStorage.getItem("token")
+axios.defaults.headers.common["Authorization"] = "Bearer " + token;
 
 //设置全局配置
 // axios.defaults.headers.common['Authorization'] = 'Bearer ' + token;
@@ -14,9 +16,8 @@ axios.defaults.headers.put["Content-Type"] = "application/json";
  * @param {*} token 
  * @returns 
  */
-export const GetOrganizationList = async (token) => {
+export const GetOrganizationList = async () => {
   try {
-    axios.defaults.headers.common["Authorization"] = "Bearer " + token;
     const response = await axios.get(`${API_URL}/organizations`);
     return response.data;
   } catch (error) {

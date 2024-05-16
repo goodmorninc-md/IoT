@@ -12,18 +12,22 @@ export default function Mapping() {
   const [mappings, setMappings] = useState([]);
   const navigate = useNavigate();
 
+  const url = window.location.href;
+  const productId = url.split("/").reverse()[0].split("?")[0];
+  console.log(productId);
+
   useEffect(() => {
     console.log("effect");
     ListAllMapofProd(currentProduct.id).then((data) => {
       setMappings(data);
     });
   }, []);
-  const Trs = MappingList(currentProduct, mappings, setMappings, navigate);
+  const Trs = MappingList(productId, mappings, setMappings, navigate);
   return (
     <>
       <Button
         onClick={() => {
-          navigate(`/product/${currentProduct.id}/mapping/edit`);
+          navigate(`/product/${productId}/mapping/edit`);
         }}
       >
         新建映射
@@ -42,7 +46,7 @@ export default function Mapping() {
 }
 
 //* 所有映射的列表
-function MappingList(currentProduct, mappings, setMappings, navigate) {
+function MappingList(productId, mappings, setMappings, navigate) {
   const DelColorConfig = {
     normal: "#ff0000",
     active: "#fbe1d9",
@@ -51,11 +55,11 @@ function MappingList(currentProduct, mappings, setMappings, navigate) {
 
   function handleChange(currentMapId) {
     navigate(
-      `/product/${currentProduct.id}/mapping/edit?mapping=${currentMapId}`
+      `/product/${productId}/mapping/edit?mapping=${currentMapId}`
     );
   }
   function handleDelete(delMappingId) {
-    RemoveMapping(currentProduct.id, delMappingId).then((data) => {
+    RemoveMapping(productId, delMappingId).then((data) => {
       const newMappings = mappings.filter((e) => {
         return e.id !== delMappingId;
       });

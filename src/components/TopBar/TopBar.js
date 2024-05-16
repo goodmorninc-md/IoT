@@ -10,49 +10,50 @@ import { AuthContext } from "@/context/AuthContext";
 import { Divider } from "@arco-design/mobile-react";
 
 import "@/styles/home.less";
+import "@/styles/topbar.less";
+import { ProductContext } from "@/context/Product";
 
-export default function MyTopBar({ LeftChildren = <></>,children }) {
-  const {
-    current_Organization,
-    setCurrentOrganization,
-    OrganizationList,
-    setOrganizationList,
-  } = useContext(OrganizationContext);
-
+export default function MyTopBar({ LeftChildren, children, content }) {
+  const { current_Organization, setCurrentOrganization } =
+    useContext(OrganizationContext);
+  const [OrganizationList, setOrganizationList] = useState([]);
+  const { currentProduct, setCurrentProduct } = useContext(ProductContext);
   //获取到设置的状态
-  const { authState, login, logout } = useContext(AuthContext);
-  const token = authState.token;
-
-  //* 初次渲染先请求组织列表和首页的数据
-  //todo 考虑请求失败后返回的值造成的影响
-
+  const { authState } = useContext(AuthContext);
+  console.log(LeftChildren)
   useEffect(() => {
-    // 获取所有组织列表
-    GetOrganizationList(token).then((data) => {
-      //* 父组件的state发生变化，并且通过props传给子组件，会导致子组件也刷新
-      data = [{ id: "首页", name: "首页", description: "string" }, ...data];
+    GetOrganizationList().then((data) => {
       setOrganizationList(data);
     });
   }, []);
 
-  const DropDownOnClick = (e,idx) => {
-    console.log(idx);
+  //* 初次渲染先请求组织列表和首页的数据
+  //todo 考虑请求失败后返回的值造成的影响
+  console.log(content)
+  const DropDownOnClick = (e, idx) => {
     setCurrentOrganization(e);
+    setCurrentProduct({});
   };
   return (
     <>
       <div className="ps">
-        {LeftChildren}
+        {LeftChildren === undefined ? (
+          <span className="Bu"></span>
+        ) : (
+          React.cloneElement(LeftChildren,{className:"sideBar"})
+        )}
 
         <span className="spacer">
-          <MyDropDown
+          {/* <MyDropDown
             DropDownElements={OrganizationList}
             DropDownOnClick={DropDownOnClick}
             className={"spacer"}
-            initialValue={current_Organization}
-          ></MyDropDown>
+            initialValue={current_Organization.id}
+            initialValueName={"首页"}
+          ></MyDropDown> */}
+          {content !== undefined ? content : current_Organization.name}
         </span>
-        {children}
+        {children === undefined ? <span className="Bu"></span> : children}
       </div>
       <Divider
         style={{ color: "black", borderColor: "black", borderStyle: "dashed" }}

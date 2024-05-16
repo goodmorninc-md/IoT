@@ -110,6 +110,7 @@ CRA中将webpack文件隐藏
      (2)当把Cell的标签bordered设置为false时，自定义bordered才有作用
      
      (3)通过对Cell.Group进行flex设置把每个Cell进行位置修改
+     (4)Cell的text属性只接受string
      
 10.   Button color和bgColor配置直接在<Button color={colorConfig} bgColor={bgConfig}>中配置
 

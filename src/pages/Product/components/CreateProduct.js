@@ -55,7 +55,7 @@ export default function CreateProductButton({}) {
         handleConfirm={handleConfirm}
         addData={addData.current}
         requiredIdx={requiredIdx}
-        content="添加产品"
+        className={"Bu"}
       >
         {dataListMap}
       </CreateOrg>

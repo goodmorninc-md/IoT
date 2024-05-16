@@ -10,7 +10,7 @@ import Custormer from "./pages/Custormer";
 import Firmware from "./pages/firmwareDetail";
 import UpgradeBatch from "./pages/upgradeBatch";
 import UpgradeBatchDetail from "./pages/upgradeBatch/upgradeBatchDatail";
-import Device from "@/pages/device"
+import Device from "@/pages/device";
 
 import { OrganizationContextProvider } from "@/context/Organization";
 import { AuthProvider } from "@/context/AuthContext";
@@ -18,16 +18,24 @@ import { ProductContextProvider } from "@/context/Product";
 import { UserContextProvider } from "@/context/User";
 import { CustormerContextProvider } from "./context/Custormer";
 import { FirmwareContextProvider } from "./context/firmware";
-
+import DeviceDetail from "./pages/deviceDetail";
+import Monitor from "@/pages/monitoring"
+import Alert from "@/pages/alert"
+import Test from "@/pages/test"
+//* AuthState创建时请求
+//* Organization也为创建时请求
+//* UserConntext为获取用户列表时请求
+//* ProductContext为ProductList组件进行请求
 function App() {
   return (
     <Router>
-      <OrganizationContextProvider>
-        <AuthProvider>
+      <CustormerContextProvider>
+        <FirmwareContextProvider>
           <ProductContextProvider>
             <UserContextProvider>
-              <CustormerContextProvider>
-                <FirmwareContextProvider>
+              <OrganizationContextProvider>
+                
+                <AuthProvider>
                   <Routes>
                     <Route path="/login" element={<Login />} />
                     <Route path="/" element={<Home />} />
@@ -36,6 +44,7 @@ function App() {
                       path="/product/:productId"
                       element={<ProductDetail />}
                     />
+                    <Route path="/device" element={<Device />} />
                     <Route path="/user/:userId" element={<UserDetail />} />
                     <Route
                       path="/product/:productId/mapping/edit"
@@ -55,17 +64,23 @@ function App() {
                       element={<UpgradeBatch></UpgradeBatch>}
                     ></Route>
                     <Route
+                      path="/monitoring"
+                      element={<Monitor></Monitor>}
+                    ></Route>
+                    <Route
                       path="/product/:productId/firmware/:firmwareId/upgradebatch/:batchId"
                       element={<UpgradeBatchDetail></UpgradeBatchDetail>}
                     ></Route>
-                    <Route path="/device" element={<Device />} />
+                    <Route path="/device/:deviceId" element={<DeviceDetail></DeviceDetail>}></Route>
+                    <Route path="/alert" element={<Alert></Alert>}></Route>
+                    <Route path="/test" element={<Test></Test>}></Route>
                   </Routes>
-                </FirmwareContextProvider>
-              </CustormerContextProvider>
+                </AuthProvider>
+              </OrganizationContextProvider>
             </UserContextProvider>
           </ProductContextProvider>
-        </AuthProvider>
-      </OrganizationContextProvider>
+        </FirmwareContextProvider>
+      </CustormerContextProvider>
     </Router>
   );
 }
@@ -107,3 +122,13 @@ export default App;
 
 //* day7
 //todo 产品客户页的删除功能
+
+//* day8
+//todo 重新捋一遍context的逻辑      把Dropdown改成DropdownMenu
+//todo 示意图、监测点页面完成
+//todo 设备1页 设备详情一页
+//todo 监控一页
+//todo 告警一页
+
+//* day8
+//todo 把drawer里面的下拉选框换成picker，就是不支持搜索

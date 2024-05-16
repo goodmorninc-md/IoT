@@ -1,27 +1,12 @@
-import { useState, createContext } from "react";
+import { useState, createContext, useEffect } from "react";
 
 export const ProductContext = createContext(null);
-
+//* 应该在产品页才初次请求
 export const ProductContextProvider = ({ children }) => {
   //* currentProduct设置为对象
-  const [currentProduct, setCurrentProduct] = useState( {
-    id: "6bd185f99fb725b27d8edc12",
-    name: "string",
-    description: "string",
-    type: 1,
-    status: 1,
-    organization: "6bd185f99fb725b27d8edc12",
-  });
-  const [productList, setProductList] = useState([
-    {
-      id: "6bd185f99fb725b27d8edc12",
-      name: "string",
-      description: "string",
-      type: 1,
-      status: 1,
-      organization: "6bd185f99fb725b27d8edc12",
-    },
-  ]);
+  const [currentProduct, setCurrentProduct] = useState({});
+  const [productList, setProductList] = useState([]);
+
   return (
     <ProductContext.Provider
       value={{

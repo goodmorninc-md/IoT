@@ -6,6 +6,10 @@ import {
   IconNotice,
   IconSetting,
 } from "@arco-design/mobile-react/esm/icon";
+import {ReactComponent as IconAlert} from "@/assets/icon/alert.svg"
+import {ReactComponent as IconProduction} from "@/assets/icon/productTabBar.svg"
+import {ReactComponent as IconDevice} from "@/assets/icon/device.svg"
+import {ReactComponent as IconCCTV} from "@/assets/icon/cctv.svg"
 import "@/styles/tabBar.less";
 import { useNavigate } from "react-router-dom";
 export default function MyTabBar({ activeIndex = 0, children }) {
@@ -13,27 +17,28 @@ export default function MyTabBar({ activeIndex = 0, children }) {
   const tabs = [
     {
       title: "首页",
-      icon: <IconHome />,
+      icon: <IconHome className="icon-tab-bar"/>,
       url: "/",
     },
     {
       title: "产品",
-      icon: <IconUser />,
+      icon: <IconProduction className="icon-tab-bar"/>,
       url: "/product",
     },
     {
       title: "设备",
-      icon: <IconNotice />,
-      url: "/",
+      icon: <IconDevice className="icon-tab-bar"/>,
+      url: "/device",
     },
     {
       title: "监控",
-      icon: <IconSetting />,
-      url: "/",
+      icon: <IconCCTV className="icon-tab-bar"/>,
+      url: "/monitoring",
     },
     {
+      icon:<IconAlert className="icon-tab-bar" />,
       title: "告警",
-      url: "/",
+      url: "/alert",
     },
   ];
   return (
@@ -41,17 +46,16 @@ export default function MyTabBar({ activeIndex = 0, children }) {
       <TabBar
         fixed={true}
         className="tabBar"
-        onChange={(index) => {}}
         activeIndex={activeIndex}
       >
         {tabs.map((tab, index) => {
-          // console.log(tab,index)
           return (
             <TabBar.Item
               title={tab.title}
               icon={tab.icon}
               key={index}
               onClick={() => {
+                console.log(tab.url)
                 navigate(tab.url);
               }}
             />

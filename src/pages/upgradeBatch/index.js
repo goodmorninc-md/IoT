@@ -109,7 +109,7 @@ export default function UpgradeBatch() {
   return (
     <>
       <MyTopBar
-        LeftChildren={<Button onClick={() => navigate(`/product/`)}></Button>}
+        LeftChildren={<Button onClick={() => navigate(`/product/${productId}?tab=firmware`)}></Button>}
       ></MyTopBar>
       <Steps
         items={items}

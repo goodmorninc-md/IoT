@@ -3,11 +3,12 @@ import TopBar from "@/components/TopBar/TopBar";
 import { ProductContext } from "@/context/Product";
 import "@/styles/home.less";
 import "@/styles/product.less";
-
+import { Button } from "@arco-design/mobile-react";
 import Tabs from "./Tabs";
 import { useContext, useEffect } from "react";
 import { GetOneProduct } from "@/services/Product";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import {ReactComponent as IconGetback} from "@/assets/icon/getBack.svg"
 export default function MainPage() {
   const tabLabel = [
     { title: "产品信息" },
@@ -24,18 +25,22 @@ export default function MainPage() {
     "mapping",
     "point",
     "diagram",
-    "fireware",
+    "firmware",
     "custormer",
   ];
   const { currentProduct, productList, setCurrentProduct } =
     useContext(ProductContext);
+  const navigate = useNavigate();
   const location = useLocation();
   const query = new URLSearchParams(location.search);
   const myParam = query.get("tab");
   const index = t.indexOf(myParam) >= 0 ? t.indexOf(myParam) : 0;
   console.log(index);
+  const url = window.location.href;
+  const productId = url.split("/").reverse()[0].split("?")[0];
+  console.log(productId);
   useEffect(() => {
-    GetOneProduct(currentProduct.id).then((data) => {
+    GetOneProduct(productId).then((data) => {
       setCurrentProduct(data);
     });
   }, []);
@@ -43,14 +48,21 @@ export default function MainPage() {
     <>
       {/* 添加组织栏 */}
 
-      <TopBar LeftChildren={<></>}>
+      <TopBar
+        LeftChildren={
+          <Button 
+          className="sideBar"
+          icon={<IconGetback className="iconInfoFpage"></IconGetback>}
+          onClick={() => navigate("/product")}></Button>
+        }
+      >
         {/* <CreateProductButton></CreateProductButton> */}
       </TopBar>
       <div>{currentProduct.name}</div>
       <Tabs
         tabLabel={tabLabel}
         defaultActiveTab={index}
-        productId={currentProduct.id}
+        productId={productId}
       ></Tabs>
 
       <MyTabBar activeIndex={1}></MyTabBar>

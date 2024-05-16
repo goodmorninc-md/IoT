@@ -11,14 +11,15 @@ export default function MyDropDown({
   DropDownElements,
   DropDownOnClick,
   initialValue,
+  initialValueName,
   className,
 }) {
   const [showDropdown, setShowDropdown] = useState(false);
-  let initialValue_name = initialValue;
-
-  let DropDownList = DropDownElements.map((e,idx) => {
+  console.log(DropDownElements);
+  let DropDownList = DropDownElements.map((e, idx) => {
+    
     if (e.id === initialValue) {
-      initialValue_name = e.name;
+      initialValueName = e.name;
     }
     return {
       label: e.name,
@@ -33,7 +34,7 @@ export default function MyDropDown({
         onClick={() => setShowDropdown(!showDropdown)}
         inline
       >
-        {initialValue_name}
+        {initialValueName}
         {showDropdown === false ? (
           <IconArrowDown></IconArrowDown>
         ) : (

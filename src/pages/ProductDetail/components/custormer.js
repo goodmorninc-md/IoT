@@ -21,11 +21,14 @@ const DelColorConfig = {
 };
 export default function Custormer() {
   const [custormerList, setCustormerList] = useState([]);
-  const { currentProduct } = useContext(ProductContext);
+
+  const url = window.location.href
+  const productId= url.split("/").reverse()[0].split("?")[0]
+  console.log(productId)
 
   //* 获得该产品的客户列表
   useEffect(() => {
-    ListCustormersOfProd(currentProduct.id).then((data) => {
+    ListCustormersOfProd(productId).then((data) => {
       console.log(data);
       setCustormerList(data);
     });

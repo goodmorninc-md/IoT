@@ -14,19 +14,28 @@ import "@/styles/mapping.less";
 import MyDropDown from "@/components/Dropdown/dropdown";
 import MyToast from "@/components/Toast/toast";
 import MyTopBar from "@/components/TopBar/TopBar";
-import {  useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { GetOneCust } from "@/services/Custormer";
 import Pop from "./component/Popupswiper";
 import { AuthContext } from "@/context/AuthContext";
+import { ReactComponent as IconGetBack } from "@/assets/icon/getBack.svg";
 export default function Custormer({}) {
   const navigate = useNavigate();
-  const {currentProduct} = useContext(ProductContext)
+  const { currentProduct } = useContext(ProductContext);
+  const { currentCustormer, setCurrentCustormer } =
+    useContext(CustormerContext);
   return (
     <>
       <MyTopBar
         LeftChildren={
-          <Button onClick={() => navigate(`/product/${currentProduct.id}?tab=custormer`)}>返回</Button>
+          <Button
+            icon={<IconGetBack className="iconInfoFpage"></IconGetBack>}
+            onClick={() =>
+              navigate(`/product/${currentProduct.id}?tab=custormer`)
+            }
+          ></Button>
         }
+        content={currentCustormer.name}
       ></MyTopBar>
 
       <UserInfo></UserInfo>
@@ -65,7 +74,7 @@ function UserInfo({}) {
 function UserAccount({}) {
   const { currentCustormer, setCurrentCustormer } =
     useContext(CustormerContext);
-  
+
   const [userList, setUserList] = useState([]);
   const [visible, setVisible] = useState(false);
   const [selectUser, setSelectUser] = useState({});
@@ -75,7 +84,6 @@ function UserAccount({}) {
     });
   }, []);
 
-  
   const users = userList.map((data, idx) => {
     return (
       <Avatar

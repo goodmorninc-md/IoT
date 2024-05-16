@@ -48,15 +48,8 @@ export default function MainPage() {
       <MyTopBar LeftChildren={<InfoDrawer></InfoDrawer>}>
         <CreateButton></CreateButton>
       </MyTopBar>
-      ;
-      {current_Organization !== "首页" ? (
-        <>
-        </>
-      ) : (
-        <>
-          
-        </>
-      )}
+
+      
       <MyTabBar></MyTabBar>
     </>
   );
@@ -104,7 +97,7 @@ function CreateButton({}) {
       handleConfirm={handleConfirm}
       addData={addData.current}
       requiredIdx={requiredIdx}
-      content={"添加组织"}
+      className={"Bu"}
     >
       {chil}
     </CreateOrg>

@@ -81,8 +81,7 @@ export default function MainPage() {
       <MyTopBar LeftChildren={<InfoDrawer></InfoDrawer>}>
         <CreateButton></CreateButton>
       </MyTopBar>
-      ;
-      {current_Organization !== "首页" ? (
+      {current_Organization.id !== "firstPage" ? (
         <>
           <div>
             <Cell.Group className="cellGroup">
@@ -243,7 +242,8 @@ function CreateButton({}) {
       handleConfirm={handleConfirm}
       addData={addData.current}
       requiredIdx={requiredIdx}
-      content={"添加组织"}
+      // content={"添加组织"}
+      className={"Bu"}
     >
       {chil}
     </CreateOrg>

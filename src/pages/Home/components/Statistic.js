@@ -45,7 +45,7 @@ export function OrganizationStatistic() {
   const role =
     authState.user === null ? -10 : authState.user.roles[0].role / 10;
   useEffect(() => {
-    GetOneOrganization(current_Organization, token).then((data) => {});
+    GetOneOrganization(current_Organization.id, token).then((data) => {});
   }, []);
   return (
     <>

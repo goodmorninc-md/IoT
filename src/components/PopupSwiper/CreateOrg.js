@@ -1,7 +1,7 @@
 import { PopupSwiper, Input, Button } from "@arco-design/mobile-react";
 import { useState } from "react";
 import { ReactComponent as AddOrgaIcon } from "@/assets/icon/addOrganization.svg";
-
+import React from "react";
 
 import MyToast from "@/components/Toast/toast";
 
@@ -12,7 +12,9 @@ export default function Create({
   requiredIdx = [0],
   addData,
   handleConfirm,
-  content
+  content,
+  icon = <AddOrgaIcon></AddOrgaIcon>,
+  className
 }) {
   const [visible, setVisible] = useState(false);
   //获取到设置的状态
@@ -47,13 +49,14 @@ export default function Create({
     });
     return flag;
   };
+  let ic = React.cloneElement(icon,{className:"iconInfo"})
   return (
     <>
       <Button
-        className="Bu"
+        className={className}
         color={colorConfig}
         bgColor={bgColor}
-        icon={<AddOrgaIcon className="iconInfo" />}
+        icon={ic}
         onClick={() => {
           handleAdd();
         }}
