@@ -1,15 +1,13 @@
-import MyTabBar from "@/components/TabBar/TabBar";
-import MyTopBar from "@/components/TopBar/TopBar";
-import MyPopover from "@/components/Popover/Popover";
 import { useState, useContext, useRef, useEffect } from "react";
-import { Fragment } from "react";
+import { useNavigate, useLocation, useParams } from "react-router-dom";
+//* context service
 import { OrganizationContext } from "@/context/Organization";
 import { AuthContext } from "@/context/AuthContext";
+import { ProductContext } from "@/context/Product";
 import { Button, Cell, Input } from "@arco-design/mobile-react";
 import { CreateOrganization } from "@/services/Organization";
 import { GetProductListByOrg } from "@/services/Product";
 import { PopupSwiper, Tabs } from "@arco-design/mobile-react";
-
 import {
   GetDiviceList,
   FindDevice,
@@ -17,13 +15,14 @@ import {
   DelDivce,
   CreateDevice,
 } from "@/services/device";
-import MyToast from "@/components/Toast/toast";
-import MyDropDown from "@/components/Dropdown/dropdown";
-import { ProductContext } from "@/context/Product";
-import { useNavigate, useLocation, useParams } from "react-router-dom";
+
+//* component
 import CreatePopup from "./component/createPopup";
 import SelectPopup from "./component/choose";
+import MyTopBar from "@/components/TopBar/TopBar";
+import MyToast from "@/components/Toast/toast";
 import { ReactComponent as IconGetBack } from "@/assets/icon/getBack.svg";
+import GetTime from "@/components/function/time";
 export default function DeviceDetail({}) {
   const [deviceInfo, setDeviceInfo] = useState({});
   const [update, setUpdate] = useState(0);
@@ -53,7 +52,7 @@ export default function DeviceDetail({}) {
           ></Button>
         }
       ></MyTopBar>
-      <div>{deviceInfo.name}</div>
+      <div className="currentDetail">{deviceInfo.name}</div>
       <Tab
         paramTab={paramTab}
         productId={productId}
@@ -87,6 +86,7 @@ function Tab({
   return (
     <>
       <Tabs
+        type="card"
         tabs={tabData}
         defaultActiveTab={defaultIndex}
         onAfterChange={(e, idx) => {
@@ -95,14 +95,14 @@ function Tab({
           navigate(url.pathname + url.search); // 导航到新的 URL
         }}
       >
-        <DeviceIn
+        <DeviceDetailTab
           productId={productId}
           deviceId={deviceId}
           deviceInfo={deviceInfo}
           setDeviceInfo={setDeviceInfo}
           update={update}
           setUpdate={setUpdate}
-        ></DeviceIn>
+        ></DeviceDetailTab>
         <DataMap
           deviceInfo={deviceInfo}
           setDeviceInfo={setDeviceInfo}
@@ -123,7 +123,7 @@ function Tab({
     </>
   );
 }
-function DeviceIn({
+function DeviceDetailTab({
   deviceInfo,
   setDeviceInfo,
   productId,
@@ -141,25 +141,28 @@ function DeviceIn({
     period: "数据发送周期",
     activatedAt: "激活时间",
     lastOnlineAt: "最后在线时间",
-    frequency: "采样频率",
+    frequency: "采样频率(Hz)",
     description: "描述",
   };
+  let deviceTemp= {...deviceInfo}
+  deviceTemp.activatedAt = GetTime(deviceInfo.activatedAt)
+  deviceTemp.lastOnlineAt = GetTime(deviceInfo.lastOnlineAt)
+  deviceTemp.status = status[deviceTemp.status]
+  deviceTemp.period = deviceTemp.period.toString()
+  deviceTemp.frequency = deviceTemp.frequency.toString()
   let groups = Object.keys(obj).map((key, idx) => {
     if (deviceInfo[key] === undefined) return <></>;
     return (
       <Cell
         label={obj[key]}
         text={
-          key !== "status"
-            ? deviceInfo[key].toString()
-            : status[deviceInfo[key]]
+          deviceTemp[key]
         }
       ></Cell>
     );
   });
   return (
     <Cell.Group>
-      <Button onClick={() => setVisible(!visible)}>编辑</Button>
       {groups}
       <CreatePopup
         productId={productId}
@@ -171,6 +174,7 @@ function DeviceIn({
         update={update}
         setUpdate={setUpdate}
       ></CreatePopup>
+      <Button onClick={() => setVisible(!visible)}>编辑</Button>
     </Cell.Group>
   );
 }
@@ -186,10 +190,8 @@ function DataMap({
   if ("mapping" in deviceInfo)
     return (
       <>
-        <div>
-          数据解析
-          <Button onClick={() => setVisible(!visible)}>更新</Button>
-        </div>
+        <Button onClick={() => setVisible(!visible)}>更新</Button>
+
         <table className="table">
           <thead className="TrTable">
             <tr>
@@ -238,10 +240,8 @@ function BelongCust({
   if ("customer" in deviceInfo)
     return (
       <>
-        <div>
-          数据解析
-          <Button onClick={() => setVisible(!visible)}>更新</Button>
-        </div>
+        <Button onClick={() => setVisible(!visible)}>更新</Button>
+
         <table className="table">
           <thead className="TrTable">
             <tr>

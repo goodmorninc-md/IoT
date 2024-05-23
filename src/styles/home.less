@@ -1,8 +1,5 @@
-@bgColor: skyblue;
+@styleColor: #1890ff;
 @BuBgColor: transparent;
-
-
-
 
 .cellGroup {
   display: flex;
@@ -13,7 +10,7 @@
   margin: 0.5rem 0.2rem 0rem 0.2rem;
   height: 2rem;
   padding-top: 0.5rem;
-  border: 0.01rem solid rgb(83, 228, 138);
+  border: 0.01rem solid #1890ff;
   // display: flex;
 }
 .cellText {
@@ -24,7 +21,7 @@
   height: 1rem;
   margin-left: 0.5rem;
 }
-.Cell-label-icon{
+.Cell-label-icon {
   width: 1.5rem;
   height: 1.5rem;
   margin-left: 0.5rem;
@@ -50,12 +47,12 @@
   font-size: 0.5rem;
 }
 .TrTable {
-  display: flex;
+  // display: flex;
   width: 100%;
 }
 .TrTable th,
 .TrTable td {
-  flex: 1; /* 让所有表头和表格数据单元格平均分配空间 */
+  // flex: 1; /* 让所有表头和表格数据单元格平均分配空间 */
   text-align: center; /* 文本居中 */
   // padding: 10px 0; /* 增加一些垂直填充 */
 }
@@ -64,50 +61,66 @@
   display: inline-flex;
   justify-content: space-around;
   align-items: center;
-  color:#ff0000
+  color: #ff0000;
 }
 tbody {
   width: 100%;
   display: flex;
   flex-direction: column; /* 使 tbody 内的 tr 项目垂直排列 */
 }
-
+thead {
+  border-bottom: 0.01rem solid #dcdcdc;
+}
 thead > tr {
-  width: 90%;
+  // width: 90%;
   display: flex;
-  justify-content: center; /* 将行内元素居中 */
+  justify-content: space-around;
   margin: 0.3rem;
+  font-size: 0.35rem;
 }
 tbody > tr {
-  border: 0.01rem solid rgb(83, 228, 138);
+  border-bottom: 0.01rem solid #dcdcdc;
   display: flex;
-  justify-content: center; /* 将行内元素居中 */
+  justify-content: space-around;
   flex-wrap: wrap;
-  margin: 0.2rem;
+  margin: 0.1rem 0.2rem 0.2rem;
+  font-size: 0.35rem;
 }
-
+th {
+  color: #86909c;
+}
 td {
-  flex: 1; /* 使所有数据单元格均等宽度 */
-  text-align: center; /* 居中对齐单元格内的文本 */
-  padding: 8px 0; /* 增加填充 */
+  display: flex;
+  // flex: 1 1;
+  text-align: center;
+  padding: 8px 0;
+  flex-direction: column;
+  justify-content: center;
+  align-content: center;
+  flex-wrap: wrap;
+  align-items: center;
 }
 .tabsControl {
   display: inline-flex;
   margin-top: 0.3rem;
+  margin-left: 1rem;
 }
 .tabs {
   // width: 70%;
   font-size: 1rem;
 }
-.tab-firstP-button{
+.tab-firstP-button {
   display: inline-flex;
   width: 30%;
   align-items: center;
   margin-top: 0.3rem;
+  margin-left: 1rem;
+  justify-content: flex-end;
 }
 .iconInfoFpage {
   width: 0.4rem;
   height: 0.4rem;
+  // color: white;
 }
 .iconInfo {
   width: 0.7rem;
@@ -123,4 +136,47 @@ td {
   justify-content: center;
   position: relative;
   text-align: center;
+  // color:@styleColor
+}
+input {
+  text-align: right;
+}
+.arco-input-label {
+  color: #86909c;
+}
+.twobutton-div {
+  display: flex;
+  justify-content: space-around;
+}
+.two-button-button {
+  margin-top: 0.5rem;
+  width: 30%;
+}
+
+.popup-button {
+  position: absolute;
+  bottom: 0;
+}
+
+.Not-cover {
+  padding-bottom: 1rem;
+  position: absolute;
+  /* bottom: 0px; */
+  /* height: 100%; */
+  width: 100%;
+}
+.cell-lack-data {
+  display: flex;
+  color: #86909c;
+  justify-content: center;
+}
+.popup-title{
+  display: flex;
+  justify-content: center;
+  color:black;
+  font-size: 0.5rem;
+}
+.cell-userInfo{
+  font-size: 0.4rem;
+  border-bottom: 0.02rem solid #dcdcdc;
 }

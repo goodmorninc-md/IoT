@@ -19,9 +19,7 @@ const EditOrganization = ({ currentSelect }) => {
   const { authState, login, logout } = useContext(AuthContext); //获取登录token
   const token = authState.token;
 
-  const {
-    current_Organization,
-  } = useContext(OrganizationContext);
+  const { current_Organization } = useContext(OrganizationContext);
 
   useEffect(() => {
     //* 组织变化，信息页一起修改
@@ -37,13 +35,15 @@ const EditOrganization = ({ currentSelect }) => {
   function handleInfoChange(e) {
     //发起网络请求
 
-    UpdateOneOrganization(current_Organization.id, token, NowOrganiationInfo).then(
-      (data) => {
-        setOrganizationInfo(NowOrganiationInfo);
-        setEditStatus(!editStatus);
-        MyToast("success", "修改成功");
-      }
-    );
+    UpdateOneOrganization(
+      current_Organization.id,
+      token,
+      NowOrganiationInfo
+    ).then((data) => {
+      setOrganizationInfo(NowOrganiationInfo);
+      setEditStatus(!editStatus);
+      MyToast("success", "修改成功");
+    });
   }
   const bgColor = {
     normal: "transparent",
@@ -51,13 +51,12 @@ const EditOrganization = ({ currentSelect }) => {
     disabled: "#FFF",
   };
   const colorConfig = {
-    normal: "#1DA57A",
+    normal: "black",
     active: "#F53F3F",
     disabled: "#FBACA3",
   };
   return (
     <>
-    
       <Button
         icon={<ChangeInfoIcon className="iconInfo" />}
         bgColor={bgColor}
@@ -73,38 +72,40 @@ const EditOrganization = ({ currentSelect }) => {
       {editStatus ? (
         <div>
           <Input
-            label="联系人:"
+            label="联系人"
             defaultValue={NowOrganiationInfo.contact}
             onChange={(e) => (NowOrganiationInfo.contact = e.target.value)}
           />
           <Input
-            label="地址:"
+            label="地址"
             defaultValue={NowOrganiationInfo.address}
             onChange={(e) => (NowOrganiationInfo.address = e.target.value)}
           />
           <Input
-            label="电话:"
+            label="电话"
             defaultValue={NowOrganiationInfo.phone}
             onChange={(e) => (NowOrganiationInfo.phone = e.target.value)}
           />
           <Input
-            label="描述:"
+            label="描述"
             defaultValue={NowOrganiationInfo.description}
             onChange={(e) => (NowOrganiationInfo.description = e.target.value)}
           />
           <Button onClick={handleInfoChange}>保存更改</Button>
         </div>
       ) : (
-        <Cell.Group>
-          <Cell className="InfoCellGroup">
-            联系人: {organizationInfo.contact}
+        <Cell.Group >
+          <Cell className="InfoCellGroup" label="联系人" bordered={true}>
+            {organizationInfo.contact}
           </Cell>
-          <Cell className="InfoCellGroup">
-            地址: {organizationInfo.address}
+          <Cell className="InfoCellGroup" label="地址">
+            {organizationInfo.address}
           </Cell>
-          <Cell className="InfoCellGroup">电话: {organizationInfo.phone}</Cell>
-          <Cell className="InfoCellGroup">
-            描述: {organizationInfo.description}
+          <Cell className="InfoCellGroup" label="电话">
+            {organizationInfo.phone}
+          </Cell>
+          <Cell className="InfoCellGroup" label="描述">
+            {organizationInfo.description}
           </Cell>
         </Cell.Group>
       )}

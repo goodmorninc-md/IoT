@@ -15,13 +15,16 @@ import MyToast from "@/components/Toast/toast";
 import MyDropDown from "@/components/Dropdown/dropdown";
 import { ProductContext } from "@/context/Product";
 import { useNavigate } from "react-router-dom";
+import Popover from "@/components/Popover/Popover";
 
+import { IconQuestionCircle } from "@arco-design/mobile-react/esm/icon";
 export default function Incident({ currentTab }) {
   return (
     <>
       <Cell.Group>
         <Statis currentTab={currentTab}></Statis>
       </Cell.Group>
+      <div className={"alert-title"}>告警事件</div>
       <IncidentList currentTab={currentTab}></IncidentList>
     </>
   );
@@ -40,7 +43,23 @@ function Statis({ currentTab }) {
   }, [currentTab]);
   const statusList = ["", "未解决", "已确认", "已解决"];
   const statisMap = statis.map((data, idx) => {
-    return <Cell label={statusList[data.status]}>{data.num}</Cell>;
+    return (
+      <Cell
+        // prepend={"描述"}
+        bordered={false}
+        className="alert-cell"
+        label={
+          <div className="cellIconAndText">
+            {statusList[data.status]}
+            <Popover content={"该组织所有客户数量"} direction="bottomCenter">
+              <IconQuestionCircle className="iconInfoFpage"></IconQuestionCircle>
+            </Popover>
+          </div>
+        }
+      >
+        {data.num}
+      </Cell>
+    );
   });
   return <>{statisMap}</>;
 }
@@ -88,27 +107,23 @@ function TrList({ incidentList }) {
     return (
       <Fragment key={idx}>
         <tr>
-          <td>{data.entityId}</td>
+          <td>
+            {data.entityId}
+            <Button onClick={() => handleLook(data.id)} className="tr-button">
+              查看
+            </Button>
+          </td>
           <td>{statusList[data.status]}</td>
-          <Button onClick={() => handleLook(data.id)}>查看</Button>
         </tr>
       </Fragment>
     );
   });
-  let key_cn = {
-    entityId: "EntityId",
-    status: "状态",
-    numAlerts: "告警次数",
-    createAt: "创建时间",
-    ackBy: "确认人",
-    resolvedBy: "解决人",
-  };
   let detail =
     Object.keys(incidentDetail).length === 0 ? (
       <></>
     ) : (
       <>
-        <Cell label="EntityId">{incidentDetail.entityId}</Cell>
+        <Cell label={<>EntityId</>}>{incidentDetail.entityId}</Cell>
         <Cell label="状态">{statusList[incidentDetail.status]}</Cell>
         <Cell label="告警次数">{incidentDetail.numAlerts}</Cell>
         <Cell label="创建时间">{formatDate(incidentDetail.createdAt)}</Cell>

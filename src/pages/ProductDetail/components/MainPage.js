@@ -58,7 +58,7 @@ export default function MainPage() {
       >
         {/* <CreateProductButton></CreateProductButton> */}
       </TopBar>
-      <div>{currentProduct.name}</div>
+      <div className="currentDetail">{currentProduct.name}</div>
       <Tabs
         tabLabel={tabLabel}
         defaultActiveTab={index}

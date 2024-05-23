@@ -56,6 +56,7 @@ export default function CreateProductButton({}) {
         addData={addData.current}
         requiredIdx={requiredIdx}
         className={"Bu"}
+        popupInfo="创建组织"
       >
         {dataListMap}
       </CreateOrg>

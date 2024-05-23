@@ -31,17 +31,17 @@ app.get("/organizations", (req, res) => {
     {
       id: "12",
       name: "绿源天然气有限公司",
-      description: "string",
+      description: "注塑机",
     },
     {
       id: "13",
       name: "绿源天然气有限公司2",
-      description: "string",
+      description: "注塑机",
     },
     {
       id: "14",
       name: "绿源天然气有限公司3",
-      description: "string",
+      description: "注塑机",
     },
   ];
   // console.log(data);

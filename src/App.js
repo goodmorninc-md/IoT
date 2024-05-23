@@ -19,9 +19,9 @@ import { UserContextProvider } from "@/context/User";
 import { CustormerContextProvider } from "./context/Custormer";
 import { FirmwareContextProvider } from "./context/firmware";
 import DeviceDetail from "./pages/deviceDetail";
-import Monitor from "@/pages/monitoring"
-import Alert from "@/pages/alert"
-import Test from "@/pages/test"
+import Monitor from "@/pages/monitoring";
+import Alert from "@/pages/alert";
+import Test from "@/pages/test";
 //* AuthState创建时请求
 //* Organization也为创建时请求
 //* UserConntext为获取用户列表时请求
@@ -34,7 +34,6 @@ function App() {
           <ProductContextProvider>
             <UserContextProvider>
               <OrganizationContextProvider>
-                
                 <AuthProvider>
                   <Routes>
                     <Route path="/login" element={<Login />} />
@@ -50,7 +49,6 @@ function App() {
                       path="/product/:productId/mapping/edit"
                       element={<Mapping />}
                     ></Route>
-
                     <Route
                       path="/product/:productId/custormer"
                       element={<Custormer />}
@@ -71,9 +69,13 @@ function App() {
                       path="/product/:productId/firmware/:firmwareId/upgradebatch/:batchId"
                       element={<UpgradeBatchDetail></UpgradeBatchDetail>}
                     ></Route>
-                    <Route path="/device/:deviceId" element={<DeviceDetail></DeviceDetail>}></Route>
+                    <Route
+                      path="/device/:deviceId"
+                      element={<DeviceDetail></DeviceDetail>}
+                    ></Route>
                     <Route path="/alert" element={<Alert></Alert>}></Route>
                     <Route path="/test" element={<Test></Test>}></Route>
+                    
                   </Routes>
                 </AuthProvider>
               </OrganizationContextProvider>
@@ -132,3 +134,20 @@ export default App;
 
 //* day8
 //todo 把drawer里面的下拉选框换成picker，就是不支持搜索
+
+//* day9
+//todo 样式调整，先调样式
+//todo 每个下滑弹窗需要添加一个标题
+//todo 对每个页面增加错误处理,分页处理/loading，确认删除选框
+//todo 产品信息标签添加编辑
+//todo 物模型上传文件
+//todo 监测点还没做完
+//todo 新建固件按键没做，设备固件的几个按键，使用客户的编辑
+//todo 设备信息的设备标签
+//todo 监控页三个标签
+
+//*day10 
+//todo 问一下老吴influxDB那个不指定function等方式是不是就是仅选变量
+//todo 调整告警页的样式
+
+//* day11 对每个trlist看能不能添加一个箭头

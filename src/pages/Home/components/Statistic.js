@@ -12,29 +12,11 @@ import { AuthContext } from "@/context/AuthContext";
 import { Cell, Input } from "@arco-design/mobile-react";
 
 import { IconQuestionCircle } from "@arco-design/mobile-react/esm/icon";
-import "@/styles/home.less";
-import { ReactComponent as OrganizationIcon } from "@/assets/icon/organization.svg";
-import { ReactComponent as UserIcon } from "@/assets/icon/user.svg";
-import { ReactComponent as ProduIcon } from "@/assets/icon/pruduction.svg";
-import { ReactComponent as DeviceIcon } from "@/assets/icon/device.svg";
-import { ReactComponent as NormalIcon } from "@/assets/icon/normal.svg";
-import { ReactComponent as NotWorkIcon } from "@/assets/icon/notwork.svg";
-import { ReactComponent as ProduNormalIcon } from "@/assets/icon/productNormal.svg";
-import { ReactComponent as WrongIcon } from "@/assets/icon/wrong.svg";
-
 import {
   CreateOrganization,
   GetOneOrganization,
 } from "@/services/Organization";
 
-import {
-  GetStatsByWebAdmin,
-  GetStatsOfCust,
-  GetStatsOfOrg,
-} from "@/services/Statistic";
-import CreateOrg from "@/components/PopupSwiper/CreateOrg";
-import MyToast from "@/components/Toast/toast";
-import InfoDrawer from "@/components/InfoDrawer/InfoDrawer";
 
 export function OrganizationStatistic() {
   const { current_Organization, OrganizationList, setOrganizationList } =

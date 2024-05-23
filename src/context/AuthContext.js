@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
     }
     else{
        MyToast('error',"please login")
-        navigate("/login")
+        // navigate("/login")
       }
   }, []);
 

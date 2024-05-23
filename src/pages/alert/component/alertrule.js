@@ -27,6 +27,7 @@ import {
   UpdateStatus,
   DelAR,
 } from "@/services/alertrule";
+import { delButtonbgColor } from "@/styles/buttonColorConfig";
 export default function AlertRule({}) {
   const { current_Organization } = useContext(OrganizationContext);
   const { currentProduct } = useContext(ProductContext);
@@ -104,6 +105,7 @@ function AlertRuleListJsx({
               onClick={() => {
                 handleDel(data.id);
               }}
+              bgColor={delButtonbgColor}
             >
               删除
             </Button>

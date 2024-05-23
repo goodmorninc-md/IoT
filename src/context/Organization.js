@@ -1,4 +1,4 @@
-import { useState, createContext, useEffect } from "react";
+import { useState, createContext, useEffect, useMemo } from "react";
 import { GetOrganizationList } from "@/services/Organization";
 export const OrganizationContext = createContext(null);
 
@@ -22,16 +22,17 @@ export const OrganizationContextProvider = ({ children }) => {
       setOrganizationList(data);
     });
   }, []);
-
+  const value = useMemo(
+    () => ({
+      current_Organization,
+      setCurrentOrganization,
+      OrganizationList,
+      setOrganizationList,
+    }),
+    [current_Organization, OrganizationList]
+  ); // 依赖项包括所有需要稳定的值
   return (
-    <OrganizationContext.Provider
-      value={{
-        current_Organization,
-        setCurrentOrganization,
-        OrganizationList,
-        setOrganizationList,
-      }}
-    >
+    <OrganizationContext.Provider value={value}>
       {children}
     </OrganizationContext.Provider>
   );

@@ -19,12 +19,11 @@ export default function MyTab({ tabData, children }) {
           defaultActiveTab={0}
           tabBarHasDivider={false}
           useCaterpillar
-          underlineSize={50}
+          underlineSize={20}
           underlineThick={6}
           caterpillarMaxScale={6}
           underlineInnerStyle={{ borderRadius: 6 }}
           caterpillarProperty="size"
-          tabBarPadding={100}
           onAfterChange={(tab, index) => {
             handleChange(index);
           }}

@@ -6,14 +6,12 @@ import {
   DropdownMenu,
 } from "@arco-design/mobile-react";
 import { IconArrowIn } from "@arco-design/mobile-react/esm/icon";
-import "@/styles/home.less";
-import "@/styles/drawer.less";
-import { useState, useContext, useEffect } from "react";
+import { useState, useContext, useEffect, useMemo } from "react";
 import { OrganizationContext } from "@/context/Organization";
 import { ProductContext } from "@/context/Product";
-import { GetProductListByOrg } from "@/services/Product";
+import { GetOneProduct, GetProductListByOrg } from "@/services/Product";
 import Select from "@/components/select/select";
-import MyDropDown from "../Dropdown/dropdown";
+import { ReactComponent as MenuIcon } from "@/assets/icon/menu.svg";
 export default function InfoDrawer({ children }) {
   const [visible, setVisible] = useState(false);
   const {
@@ -24,28 +22,19 @@ export default function InfoDrawer({ children }) {
   } = useContext(OrganizationContext);
   const { currentProduct, setCurrentProduct, productList, setProductList } =
     useContext(ProductContext);
-
-  const [showDropdown, setShowDropdown] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [dropdownVisible, setDropdownVisible] = useState(false);
-
+  console.log(current_Organization.id);
   //* 获取该组织下的的产品列表
   useEffect(() => {
+    console.log("current_Organization changed", current_Organization.id);
     setCurrentProduct({});
     GetProductListByOrg(current_Organization.id).then((data) => {
       console.log(data);
       setProductList(data);
     });
-  }, [current_Organization]);
+  }, [current_Organization.id]);
   function openDrawer() {
     setVisible(!visible);
   }
-  const options = [
-    { label: "选项1", value: 1 },
-    { label: "选项2", value: 2 },
-    { label: "选项3", value: 3 },
-    { label: "选项4", value: 4 },
-  ];
 
   let org_data_select = OrganizationList.map((data, idx) => {
     return { label: data.name, value: data };
@@ -67,14 +56,23 @@ export default function InfoDrawer({ children }) {
     setCurrentOrganization(e);
   }
   function handleChangeProd(e) {
-    setCurrentProduct(e);
+    GetOneProduct(e.id).then((data) => {
+      setCurrentProduct(data);
+      console.log(data)
+    });
   }
+  const colorConfig = {
+    normal: "transparent",
+    active: "#F53F3F",
+    disabled: "#FBACA3",
+  };
   return (
     <>
       <Button
+        bgColor={colorConfig}
         className="sideBar"
         onClick={openDrawer}
-        icon={<IconArrowIn></IconArrowIn>}
+        icon={<MenuIcon className="iconInfo"></MenuIcon>}
       ></Button>
       <PopupSwiper
         visible={visible}

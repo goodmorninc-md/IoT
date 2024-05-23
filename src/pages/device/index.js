@@ -28,6 +28,8 @@ export default function Device() {
   const [deviceList, setDeviceList] = useState([]);
   const [productList, setProductList] = useState([]);
   const [visible, setVisible] = useState(false);
+
+  console.log("currentProduct",currentProduct)
   //* 当当前组织不为首页时，才可以根据组织获取产品列表
   //* currentOrganization发生变化时，会对产品列表进行重新请求
   useEffect(() => {
@@ -49,11 +51,11 @@ export default function Device() {
       });
   }, [currentProduct, current_Organization]);
 
-  function handleDropDownOnClick(data) {
-    //* 打印的是id
-    console.log(data);
-    setCurrentProduct({ ...currentProduct, id: data });
-  }
+  // function handleDropDownOnClick(data) {
+  //   //* 打印的是id
+  //   console.log(data);
+  //   setCurrentProduct({ ...currentProduct, id: data });
+  // }
 
   return (
     <>

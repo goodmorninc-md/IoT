@@ -6,36 +6,23 @@ import {
   Routes,
   useNavigate,
 } from "react-router-dom";
-
 import { OrganizationContext } from "@/context/Organization";
 import { AuthContext } from "@/context/AuthContext";
-
 import { ProductContext } from "@/context/Product";
-import {
-  Cell,
-  Divider,
-  Button,
-  Input,
-  Picker,
-  Radio,
-  Textarea,
-} from "@arco-design/mobile-react";
-import "@/styles/home.less";
-import "@/styles/product.less";
-
-import MyRadio from "./Radio";
+import { Button } from "@arco-design/mobile-react";
 import { GetProductListByOrg } from "@/services/Product";
-const keys = ["名称", "类型", "描述"];
-const keysInEng = ["name", "type", "description"];
 
+import {
+  delButtonbgColor,
+  bgColor,
+  colorConfig,
+} from "@/styles/buttonColorConfig";
+import Dialog from "@/components/Popover/delConfirm";
 export default function ProductList({}) {
   const { currentProduct, setCurrentProduct, productList, setProductList } =
     useContext(ProductContext);
 
   const Navigate = useNavigate();
-  //* 需要一个record来记录之前的内容
-  const [record, setRecord] = useState({});
-
 
   const handleChangeProduct = (data) => {
     const newProductList = productList.map((e) => {
@@ -48,60 +35,25 @@ export default function ProductList({}) {
   const handleNavigate = (productId) => {
     Navigate(`/product/${productId}`);
   };
-
-  //* 更新信息
-  const UpdateChildren = (
-    <>
-      <Input
-        label={keys[0] + ":"}
-        required
-        onChange={(e) => {
-          setRecord({ ...record, name: e.target.value });
-        }}
-        defaultValue={record.name}
-      ></Input>
-      <div>
-        <div>类型:</div>
-        <MyRadio record={record} setRecord={setRecord}></MyRadio>
-      </div>
-      <Textarea
-        prefix="Message"
-        statisticsMaxlength={50}
-        autosize
-        placeholder="Please enter the description"
-        border="all"
-        rows={2}
-        renderStatistics={(cur, max) => `${cur}/${max}`}
-        label={"描述"}
-        defaultValue={record.description}
-        onChange={(e) => {
-          setRecord({ ...record, description: e.target.value });
-        }}
-      />
-    </>
-  );
+  const handleDel = (productId) => {
+    
+  };
   //* 产品列表
   const ProductListMap = productList.map((data, idx) => {
     console.log(data);
     return (
-      <Info
-        updateContent={UpdateChildren}
-        keys={keys}
-        keysInEng={keysInEng}
-        requiredIdx={[0]}
-        info={data}
-        handleChange={handleChangeProduct}
-        handleDelete={() => {
-          handleNavigate(data.id);
-          setCurrentProduct(data);
-        }}
-        record={record}
-        setRecord={setRecord}
-        content2={"产品详情"}
-      >
-        <td>{data.name}</td>
-        <td>{data.description}</td>
-      </Info>
+      <tr>
+        <td>
+          {data.name}
+          <Button className="tr-button" onClick={()=> handleNavigate(data.id)}>
+            查看
+          </Button>
+        </td>
+        <td>
+          {data.description}
+          <Dialog content="删除" handleDel={()=> console.log("del")}></Dialog>
+        </td>
+      </tr>
     );
   });
 

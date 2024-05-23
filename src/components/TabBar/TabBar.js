@@ -47,6 +47,9 @@ export default function MyTabBar({ activeIndex = 0, children }) {
         fixed={true}
         className="tabBar"
         activeIndex={activeIndex}
+        activeCustomStyle={{
+          color: '#1890ff',
+        }}
       >
         {tabs.map((tab, index) => {
           return (
@@ -54,6 +57,7 @@ export default function MyTabBar({ activeIndex = 0, children }) {
               title={tab.title}
               icon={tab.icon}
               key={index}
+              activeCustomStyle="active-style"
               onClick={() => {
                 console.log(tab.url)
                 navigate(tab.url);

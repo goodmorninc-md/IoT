@@ -1,8 +1,7 @@
-import { PopupSwiper, Input, Button } from "@arco-design/mobile-react";
+import { PopupSwiper, Input, Button ,Cell} from "@arco-design/mobile-react";
 import { useState } from "react";
 import { ReactComponent as AddOrgaIcon } from "@/assets/icon/addOrganization.svg";
 import React from "react";
-
 import MyToast from "@/components/Toast/toast";
 
 
@@ -14,7 +13,8 @@ export default function Create({
   handleConfirm,
   content,
   icon = <AddOrgaIcon></AddOrgaIcon>,
-  className
+  className,
+  popupInfo=""
 }) {
   const [visible, setVisible] = useState(false);
   //获取到设置的状态
@@ -26,7 +26,7 @@ export default function Create({
     disabled: "#FFF",
   };
   const colorConfig = {
-    normal: "#1DA57A",
+    normal: "black",
     active: "#F53F3F",
     disabled: "#FBACA3",
   };
@@ -71,6 +71,7 @@ export default function Create({
         allowSwipeDirections={["right", "bottom"]}
         exitDirection={"bottom"}
       >
+        <Cell className="popup-title">{popupInfo}</Cell>
         {children}
         <Button
           onClick={() => {

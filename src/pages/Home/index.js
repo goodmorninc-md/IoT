@@ -2,7 +2,6 @@ import MyTabBar from "@/components/TabBar/TabBar";
 import MyTopBar from "@/components/TopBar/TopBar";
 
 import MyPopover from "@/components/Popover/Popover";
-
 import Tabs from "./components/TabsControl";
 import { useState, useContext, useRef, useEffect } from "react";
 
@@ -13,6 +12,7 @@ import { Cell, Input } from "@arco-design/mobile-react";
 
 import { IconQuestionCircle } from "@arco-design/mobile-react/esm/icon";
 import "@/styles/home.less";
+import "@/styles/select.less"
 import { ReactComponent as OrganizationIcon } from "@/assets/icon/organization.svg";
 import { ReactComponent as UserIcon } from "@/assets/icon/user.svg";
 import { ReactComponent as ProduIcon } from "@/assets/icon/pruduction.svg";
@@ -216,7 +216,7 @@ function CreateButton({}) {
   let chil = keys.map((value, idx) => {
     return (
       <Input
-        label={value + ":"}
+        label={value}
         required={requiredIdx.indexOf(idx) !== -1 ? true : false}
         onChange={(e) => {
           console.log(value);
@@ -244,6 +244,7 @@ function CreateButton({}) {
       requiredIdx={requiredIdx}
       // content={"添加组织"}
       className={"Bu"}
+      popupInfo="创建组织"
     >
       {chil}
     </CreateOrg>

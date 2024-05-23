@@ -6,7 +6,8 @@ export default function Pickers({
   singleList,
   text,
   handleChange,
-  disabled=false,
+  disabled = false,
+  title = "",
 }) {
   const [singleVisible, setSingleVisible] = useState(false);
 
@@ -24,7 +25,6 @@ export default function Pickers({
   //     ],
   //   ];
   // }, []);
-console.log(disabled)
   return (
     <>
       <Cell
@@ -49,7 +49,8 @@ console.log(disabled)
           handleChange(val[0]);
         }}
         disabled={disabled}
-        // disabled !== undefined ? disabled :false
+        title={title}
+        className="button-style"
       />
     </>
   );
