@@ -7,6 +7,7 @@ import { ListAllMapofProd } from "@/services/mapping";
 import { UpdateDevice } from "@/services/device";
 import MyToast from "@/components/Toast/toast";
 import { ListCustormersOfProd } from "@/services/Custormer";
+import CellNodata from "@/components/InfoList/lackData";
 export default function SelectPopup({
   productId,
   deviceId,
@@ -19,50 +20,60 @@ export default function SelectPopup({
   type = 1,
 }) {
   const [selectList, SetSelectList] = useState([]);
-  const [selectEle, setSelectEle] = useState("");
+  const [selectEle, setSelectEle] = useState({});
   useEffect(() => {
-    if (type === 1)
-      ListAllMapofProd(productId).then((data) => {
-        SetSelectList(data);
-      });
-    else if (type === 2) {
-      ListCustormersOfProd(productId).then((data) => {
-        SetSelectList(data);
-      });
+    if (visible) {
+      if (type === 1)
+        ListAllMapofProd(productId).then((data) => {
+          SetSelectList(data);
+        }).catch(error=>{
+          MyToast("error","获取变量列表失败")
+        });
+      else if (type === 2) {
+        ListCustormersOfProd(productId).then((data) => {
+          console.log(data);
+          SetSelectList(data);
+        }).catch(error=>{
+          MyToast("error","获取客户列表失败")
+        });
+      }
     }
   }, [visible]);
-  let son1;
-  if (type === 1) {
-    if ("mapping" in deviceInfo && type === 1) son1 = <Cell>暂无数据</Cell>;
-    else if ("custormer" in deviceInfo && type === 2)
-      son1 = <Cell>暂无数据</Cell>;
-    else
-      son1 = selectList.map((data, idx) => {
-        return (
-          <Cell
-            id={data.id}
-            style={{
-              backgroundColor: selectEle.id === data.id ? "#e6f7ff" : "#fff",
-            }}
-            onClick={() => setSelectEle(data.id)}
-          >
-            {data.name}
-          </Cell>
-        );
-      });
-  }
-  console.log(son1);
+  console.log(selectList,selectEle.id);
 
+  let son1;
+  if (type === 1 && "mapping" in deviceInfo) {
+    son1 = <Cell label={deviceInfo.mapping.name}>已绑定</Cell>;
+  } else if (type === 2 && "customer" in deviceInfo)
+    son1 = <Cell label={deviceInfo.customer.name}>已绑定</Cell>;
+  else
+    son1 = selectList.map((data, idx) => {
+      return (
+        <Cell
+          id={data.id}
+          style={{
+            backgroundColor: selectEle.id === data.id ? "#e6f7ff" : "#fff",
+          }}
+          onClick={() => setSelectEle(data)}
+        >
+          {data.name}
+        </Cell>
+      );
+    });
   function handleSelect() {
     let body = {};
     if (type === 1) {
-      body = { ...deviceInfo, mapping: selectEle.id };
+      body = { ...deviceInfo, mapping: selectEle };
     } else if (type === 2) {
-      body = { ...deviceInfo, mapping: selectEle.id };
+      body = { ...deviceInfo, customer: selectEle };
     }
     UpdateDevice(productId, "", deviceId, body).then((data) => {
       MyToast("success", "绑定成功");
       setUpdate(update + 1);
+      setVisible(!visible);
+      setDeviceInfo(body);
+    }).catch(error=>{
+      MyToast("error","更新设备失败")
     });
   }
   return (
@@ -78,7 +89,7 @@ export default function SelectPopup({
       >
         {son1}
         <Button
-          disabled={selectEle.length === 0}
+          disabled={Object.keys(selectEle).length === 0}
           onClick={() => {
             handleSelect();
           }}

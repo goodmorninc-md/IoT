@@ -14,7 +14,7 @@ import { ReactComponent as NormalIcon } from "@/assets/icon/normal.svg";
 import { ReactComponent as NotWorkIcon } from "@/assets/icon/notwork.svg";
 import { ReactComponent as ProduNormalIcon } from "@/assets/icon/productNormal.svg";
 import { ReactComponent as WrongIcon } from "@/assets/icon/wrong.svg";
-
+import MyToast from "@/components/Toast/toast";
 import {
   GetStatsByWebAdmin,
   GetStatsOfCust,
@@ -37,16 +37,22 @@ export function OrganizationStatistic() {
     if (role === 0)
       GetStatsByWebAdmin(token).then((data) => {
         setStatis(data);
+      }).catch(error=>{
+        MyToast("error","获取数据失败")
       });
     //组织用户
     else if (role  === 1) {
       GetStatsOfOrg(token).then((data) => {
         setStatis(data);
+      }).catch(error=>{
+        MyToast("error","获取数据失败")
       });
       //产品用户
     } else {
       GetStatsOfCust(token).then((data) => {
         setStatis(data);
+      }).catch(error=>{
+        MyToast("error","获取数据失败")
       });
     }
   }, []);

@@ -5,16 +5,8 @@ import { OrganizationContext } from "@/context/Organization";
 import { AuthContext } from "@/context/AuthContext";
 import { ProductContext } from "@/context/Product";
 import { Button, Cell, Input } from "@arco-design/mobile-react";
-import { CreateOrganization } from "@/services/Organization";
-import { GetProductListByOrg } from "@/services/Product";
 import { PopupSwiper, Tabs } from "@arco-design/mobile-react";
-import {
-  GetDiviceList,
-  FindDevice,
-  UpdateDevice,
-  DelDivce,
-  CreateDevice,
-} from "@/services/device";
+import { FindDevice } from "@/services/device";
 
 //* component
 import CreatePopup from "./component/createPopup";
@@ -23,6 +15,8 @@ import MyTopBar from "@/components/TopBar/TopBar";
 import MyToast from "@/components/Toast/toast";
 import { ReactComponent as IconGetBack } from "@/assets/icon/getBack.svg";
 import GetTime from "@/components/function/time";
+import { bgColor } from "@/styles/buttonColorConfig";
+import CellNodata from "@/components/InfoList/lackData";
 export default function DeviceDetail({}) {
   const [deviceInfo, setDeviceInfo] = useState({});
   const [update, setUpdate] = useState(0);
@@ -35,13 +29,17 @@ export default function DeviceDetail({}) {
   const organizationId = query.get("organizationId");
   const url = window.location.href;
   let [u, params] = url.split("?");
-  let deviceId = u.split("/").reverse()[0];
+  const { deviceId } = useParams();
   //todo effect放在这里是为了后续在topBar上面放设备信息
   useEffect(() => {
-    FindDevice(productId, "", deviceId).then((data) => {
-      setDeviceInfo(data);
-    });
-  }, [update]);
+    FindDevice(productId, "", deviceId)
+      .then((data) => {
+        setDeviceInfo(data);
+      })
+      .catch((error) => {
+        MyToast("error","获取设备详情失败");
+      });
+  }, []);
   return (
     <>
       <MyTopBar
@@ -49,6 +47,7 @@ export default function DeviceDetail({}) {
           <Button
             icon={<IconGetBack className="iconInfoFpage"></IconGetBack>}
             onClick={() => navigate(`/device`)}
+            bgColor={bgColor}
           ></Button>
         }
       ></MyTopBar>
@@ -144,21 +143,16 @@ function DeviceDetailTab({
     frequency: "采样频率(Hz)",
     description: "描述",
   };
-  let deviceTemp= {...deviceInfo}
-  deviceTemp.activatedAt = GetTime(deviceInfo.activatedAt)
-  deviceTemp.lastOnlineAt = GetTime(deviceInfo.lastOnlineAt)
-  deviceTemp.status = status[deviceTemp.status]
-  deviceTemp.period = deviceTemp.period.toString()
-  deviceTemp.frequency = deviceTemp.frequency.toString()
+  let deviceTemp = { ...deviceInfo };
+  deviceTemp.activatedAt = GetTime(deviceInfo.activatedAt);
+  deviceTemp.lastOnlineAt = GetTime(deviceInfo.lastOnlineAt);
+  deviceTemp.status = status[deviceTemp.status];
+  deviceTemp.period = deviceTemp.period.toString();
+  deviceTemp.frequency = deviceTemp.frequency.toString();
   let groups = Object.keys(obj).map((key, idx) => {
     if (deviceInfo[key] === undefined) return <></>;
     return (
-      <Cell
-        label={obj[key]}
-        text={
-          deviceTemp[key]
-        }
-      ></Cell>
+      <Cell label={obj[key]} text={deviceTemp[key]} bordered={false}></Cell>
     );
   });
   return (
@@ -190,7 +184,7 @@ function DataMap({
   if ("mapping" in deviceInfo)
     return (
       <>
-        <Button onClick={() => setVisible(!visible)}>更新</Button>
+        {/* <Button onClick={() => setVisible(!visible)}>更新</Button> */}
 
         <table className="table">
           <thead className="TrTable">
@@ -204,6 +198,23 @@ function DataMap({
             <MappingList info={deviceInfo.mapping} />
           </tbody>
         </table>
+        {/* <SelectPopup
+          productId={productId}
+          deviceId={deviceId}
+          deviceInfo={deviceInfo}
+          setDeviceInfo={setDeviceInfo}
+          visible={visible}
+          setVisible={setVisible}
+          update={update}
+          setUpdate={setUpdate}
+        ></SelectPopup> */}
+      </>
+    );
+  else
+    return (
+      <>
+        <Button onClick={() => setVisible(!visible)}>更新</Button>
+        <CellNodata></CellNodata>
         <SelectPopup
           productId={productId}
           deviceId={deviceId}
@@ -216,15 +227,14 @@ function DataMap({
         ></SelectPopup>
       </>
     );
-  else return <div>暂无数据</div>;
 }
 function MappingList({ info }) {
   const type = ["", "JSON", "Binary"];
   return (
     <tr>
-      <td>{info.name}</td>
-      <td>{info.description}</td>
-      <td>{type[info.type]}</td>
+      <td className="tr-text">{info.name}</td>
+      <td className="tr-text">{info.description}</td>
+      <td className="mapping-list">{type[info.type]}</td>
     </tr>
   );
 }
@@ -237,6 +247,7 @@ function BelongCust({
   setUpdate,
 }) {
   const [visible, setVisible] = useState(false);
+
   if ("customer" in deviceInfo)
     return (
       <>
@@ -263,14 +274,26 @@ function BelongCust({
           setVisible={setVisible}
           update={update}
           setUpdate={setUpdate}
+          type={2}
         ></SelectPopup>
       </>
     );
   else
     return (
       <>
-        <div>请选择客户</div>
+        <Cell className="popup-title">请选择客户</Cell>
         <Button onClick={() => setVisible(!visible)}>更新</Button>
+        <SelectPopup
+          productId={productId}
+          deviceId={deviceId}
+          deviceInfo={deviceInfo}
+          setDeviceInfo={setDeviceInfo}
+          visible={visible}
+          setVisible={setVisible}
+          update={update}
+          setUpdate={setUpdate}
+          type={2}
+        ></SelectPopup>
       </>
     );
 }

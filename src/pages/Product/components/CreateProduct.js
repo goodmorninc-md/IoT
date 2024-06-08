@@ -3,7 +3,6 @@ import { useState, useContext, useRef } from "react";
 
 import { Input } from "@arco-design/mobile-react";
 import "@/styles/home.less";
-import "@/styles/product.less";
 import MyToast from "@/components/Toast/toast";
 
 import { OrganizationContext } from "@/context/Organization";

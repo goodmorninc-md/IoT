@@ -45,7 +45,7 @@ export default function InfoPopupSwiper({
             label={value + ":"}
             required={requiredIdx.indexOf(idx) !== -1 ? true : false}
             onChange={(e) => {
-              console.log(value);
+              // console.log(value);
               data[keysInEng[idx]] = e.target.value;
             }}
             clearable={true}
@@ -76,7 +76,7 @@ export default function InfoPopupSwiper({
             label={value + ":"}
             required={requiredIdx.indexOf(idx) !== -1 ? true : false}
             onChange={(e) => {
-              console.log(value);
+              // console.log(value);
               data[keysInEng[idx]] = e.target.value;
             }}
             clearable={true}

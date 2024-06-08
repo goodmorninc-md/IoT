@@ -1,8 +1,46 @@
-.font{
-    font-size: 30px;
-    text-align: center;
+.font {
+  font-size: 0.7rem;
+  text-align: center;
+  /* color: white; */
 }
 .demo-input-icon {
-    display: flex;
-    align-items: center;
+  display: flex;
+  align-items: center;
+}
+#root {
+  height: 100%;
+  width: 100%;
+  /* background-color: #2d3a4b; */
+}
+.bg {
+  /* background-color: #2d3a4b; */
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.center html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  width: 100%;
+}
+
+.login-container {
+  margin: 2rem 0.3rem;
+  border: 2px solid;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 10像素的黑色阴影 */
+  border-image-slice: 1;
+  /* border-image-source: linear-gradient(
+    to right,
+    #f06,
+    #00f
+  ); 从左到右的渐变色 */
+}
+.login-input {
+  margin: 0.2rem 0.1rem;
+}
+.login-div {
+  display: flex;
+  justify-content: center;
 }

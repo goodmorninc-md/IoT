@@ -11,7 +11,7 @@ export default function Pickers({
   const [singleVisible, setSingleVisible] = useState(false);
 
 
-console.log(disabled)
+// console.log(disabled)
   return (
     <>
       <Cell

@@ -32,9 +32,12 @@ export const AuthProvider = ({ children }) => {
       console.log("authState")
       //? 是否存在验证token有效性的api
       GetInfoOfUser(authState.token).then(data=>{
-        console.log(data)
+
+        console.log("GetInfoOfUser",data)
         setAuthState({...authState,user:data})
-      })
+      }).catch(error=>{
+        MyToast("error","获取个人信息失败")
+      });
     }
     else{
        MyToast('error',"please login")

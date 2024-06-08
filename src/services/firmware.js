@@ -1,5 +1,6 @@
 import axios from "axios";
 import { API_URL } from "./Data";
+import MyToast from "@/components/Toast/toast";
 //设置全局配置
 axios.defaults.headers.post["Content-Type"] = "application/json";
 axios.defaults.headers.put["Content-Type"] = "application/json";
@@ -14,35 +15,21 @@ axios.defaults.headers.common["Authorization"] = "Bearer " + token;
  * @returns []
  */
 export async function GetFirmwareList(productId, page, size) {
-  try {
+
     const url = API_URL + `/product/${productId}/firmware`;
     // const response = axios.get(url);
     const response = {
       data: [
         {
           id: "6bd185f99fb725b27d8edc12",
-          name: "string",
-          description: "string",
-          version: "string",
+          name: "产品固件",
+          description: "固件1",
+          version: "v1.0",
         },
       ],
     };
     return response.data;
-  } catch (error) {
-    if (error.response) {
-      // 请求发送成功，但服务器返回错误状态码
-      console.error("Server error:", error.response.data);
-      throw new Error("Server error: " + error.response.data);
-    } else if (error.request) {
-      // 请求发送失败，没有收到服务器响应
-      console.error("Network error:", error.request);
-      throw new Error("Network error: " + error.request);
-    } else {
-      // 其他错误，如请求设置错误或者未知错误
-      console.error("Error:", error.message);
-      throw new Error("Error: " + error.message);
-    }
-  }
+
 }
 /**
  * admin,body传参
@@ -51,7 +38,7 @@ export async function GetFirmwareList(productId, page, size) {
  * @returns
  */
 export async function CreateFirmware(productId, body) {
-  try {
+
     const url = API_URL + `/product/${productId}/firmware`;
     // const response = axios.post(url,body);
     const response = {
@@ -59,7 +46,7 @@ export async function CreateFirmware(productId, body) {
         id: "6bd185f99fb725b27d8edc12",
         name: "string",
         description: "string",
-        version: "string",
+        version: "v1.0",
         file: {
           id: "6bd185f99fb725b27d8edc12",
           filename: "string",
@@ -85,21 +72,7 @@ export async function CreateFirmware(productId, body) {
       },
     };
     return response.data;
-  } catch (error) {
-    if (error.response) {
-      // 请求发送成功，但服务器返回错误状态码
-      console.error("Server error:", error.response.data);
-      throw new Error("Server error: " + error.response.data);
-    } else if (error.request) {
-      // 请求发送失败，没有收到服务器响应
-      console.error("Network error:", error.request);
-      throw new Error("Network error: " + error.request);
-    } else {
-      // 其他错误，如请求设置错误或者未知错误
-      console.error("Error:", error.message);
-      throw new Error("Error: " + error.message);
-    }
-  }
+
 }
 /**
  * admin
@@ -108,19 +81,19 @@ export async function CreateFirmware(productId, body) {
  * @returns
  */
 export async function ShowDetailOfFirmware(productId, firmwareId) {
-  try {
+
     const url = API_URL + `/product/${productId}/firmware/${firmwareId}`;
     // const response = axios.get(url);
     const response = {
       data: {
         id: "6bd185f99fb725b27d8edc12",
-        name: "string",
-        description: "string",
-        version: "string",
+        name: "产品固件",
+        description: "固件1",
+        version: "v1.0",
         file: {
           id: "6bd185f99fb725b27d8edc12",
-          filename: "string",
-          fd: "string",
+          filename: "readme.md",
+          fd: "readme.md",
           size: 0,
           type: "string",
           product: "6bd185f99fb725b27d8edc12",
@@ -142,21 +115,7 @@ export async function ShowDetailOfFirmware(productId, firmwareId) {
       },
     };
     return response.data;
-  } catch (error) {
-    if (error.response) {
-      // 请求发送成功，但服务器返回错误状态码
-      console.error("Server error:", error.response.data);
-      throw new Error("Server error: " + error.response.data);
-    } else if (error.request) {
-      // 请求发送失败，没有收到服务器响应
-      console.error("Network error:", error.request);
-      throw new Error("Network error: " + error.request);
-    } else {
-      // 其他错误，如请求设置错误或者未知错误
-      console.error("Error:", error.message);
-      throw new Error("Error: " + error.message);
-    }
-  }
+
 }
 /**
  * body传参
@@ -165,7 +124,7 @@ export async function ShowDetailOfFirmware(productId, firmwareId) {
  * @returns
  */
 export async function UpdateFirmware(productId, firmwareId, body) {
-  try {
+
     const url = API_URL + `/product/${productId}/firmware/${firmwareId}`;
     // const response = axios.put(url);
     const response = {
@@ -193,30 +152,16 @@ export async function UpdateFirmware(productId, firmwareId, body) {
       },
     };
     return response.data;
-  } catch (error) {
-    if (error.response) {
-      // 请求发送成功，但服务器返回错误状态码
-      console.error("Server error:", error.response.data);
-      throw new Error("Server error: " + error.response.data);
-    } else if (error.request) {
-      // 请求发送失败，没有收到服务器响应
-      console.error("Network error:", error.request);
-      throw new Error("Network error: " + error.request);
-    } else {
-      // 其他错误，如请求设置错误或者未知错误
-      console.error("Error:", error.message);
-      throw new Error("Error: " + error.message);
-    }
-  }
+
 }
 /**
  * admin
- * @param {*} productId 
- * @param {*} firmwareId 
- * @returns 
+ * @param {*} productId
+ * @param {*} firmwareId
+ * @returns
  */
 export async function DelFirmware(productId, firmwareId) {
-  try {
+
     const url = API_URL + `/product/${productId}/firmware/${firmwareId}`;
     // const response = axios.del(url);
     const response = {
@@ -226,19 +171,17 @@ export async function DelFirmware(productId, firmwareId) {
       },
     };
     return response.data;
-  } catch (error) {
-    if (error.response) {
-      // 请求发送成功，但服务器返回错误状态码
-      console.error("Server error:", error.response.data);
-      throw new Error("Server error: " + error.response.data);
-    } else if (error.request) {
-      // 请求发送失败，没有收到服务器响应
-      console.error("Network error:", error.request);
-      throw new Error("Network error: " + error.request);
-    } else {
-      // 其他错误，如请求设置错误或者未知错误
-      console.error("Error:", error.message);
-      throw new Error("Error: " + error.message);
-    }
-  }
+
+}
+
+export async function GetFirmwareFile(productId, filename) {
+
+    const url1 = "http://localhost:8080/file"; // 替换为你的 API URL
+    const response = await axios.get(url1, {
+      responseType: "blob", // 关键设置
+    });
+
+    
+    return response.data;
+
 }

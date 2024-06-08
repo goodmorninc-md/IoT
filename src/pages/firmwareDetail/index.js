@@ -1,25 +1,29 @@
 import { ProductContext } from "@/context/Product";
 import { Fragment, useContext, useEffect, useState } from "react";
-import {
-  GetFirmwareList,
-  CreateFirmware,
-  ShowDetailOfFirmware,
-  UpdateFirmware,
-  DelFirmware,
-} from "@/services/firmware";
-
+import { ShowDetailOfFirmware } from "@/services/firmware";
+import * as FirmwareApi from "@/services/firmware";
 import {
   ListAllUbOfFirmware,
-  CreateUB,
-  ShowDetailOfUB,
   DelUB,
 } from "@/services/upgradeBatch";
-import { Button, Cell, Uploader, Tabs } from "@arco-design/mobile-react";
+import {
+  Button,
+  Cell,
+  Uploader,
+  Tabs,
+  PopupSwiper,
+  Input,
+} from "@arco-design/mobile-react";
 import "@/styles/mapping.less";
 import MyToast from "@/components/Toast/toast";
 import MyTopBar from "@/components/TopBar/TopBar";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { FirmwareContext } from "@/context/firmware";
+import ReturnButton from "@/components/TopBar/return";
+import TitleWithButton from "@/components/TopBar/titleWithButton";
+import Dialog from "@/components/Popover/delConfirm";
+import { IconDownload } from "@arco-design/mobile-react/esm/icon";
+import CellNodata from "@/components/InfoList/lackData";
 
 /*
 detail of a firmware of a product
@@ -57,10 +61,9 @@ export default function Firmware({}) {
   const { currentProduct } = useContext(ProductContext);
   const location = useLocation();
   const url = window.location.href;
-  const list = url.split("/").reverse()
-  console.log(list)
+  const list = url.split("/").reverse();
   const firmwareId = list[0];
-  const productId = list[2]
+  const productId = list[2];
   // const productId = list[]
 
   //* 获取该硬件数据
@@ -71,65 +74,108 @@ export default function Firmware({}) {
   }, []);
 
   if (Object.keys(currentFirmware).length === 0) return <div>loading</div>;
+  function handleDownload() {
+    MyToast("error", "开发中");
+    FirmwareApi.GetFirmwareFile(productId, firmwareId).then((data) => {
+      // 创建一个 URL 对象，指向 Blob
+      const url = window.URL.createObjectURL(new Blob([data]));
+      const link = document.createElement("a");
+      link.href = url;
+
+      // 设置下载文件名
+      link.setAttribute("download", currentFirmware.file.filename);
+
+      // 将链接添加到文档中
+      document.body.appendChild(link);
+
+      // 触发点击事件
+      link.click();
+
+      // 从文档中移除链接
+      document.body.removeChild(link);
+
+      // 释放 URL 对象
+      window.URL.revokeObjectURL(url);
+    }).catch(error=>{
+      MyToast("error","下载失败")
+    });
+  }
   return (
     <>
       <MyTopBar
         LeftChildren={
-          <Button
-            onClick={() =>
-              navigate(`/product/${productId}?tab=firmware`)
-            }
-          >
-            返回
-          </Button>
+          <ReturnButton
+            navigate={() => navigate(`/product/${productId}?tab=firmware`)}
+          ></ReturnButton>
         }
+        content={currentProduct.name}
       ></MyTopBar>
-      <Uploader></Uploader>
       <Cell.Group>
         <Cell label="版本" text={currentFirmware.version}></Cell>
-        <Cell label="固件文件" text={currentFirmware.file.filename}></Cell>
+        <Cell
+          icon={<IconDownload onClick={handleDownload}></IconDownload>}
+          label="固件文件"
+          text={currentFirmware.file.filename}
+        ></Cell>
       </Cell.Group>
-      <Tab firmwareInfo={currentFirmware}></Tab>
+      <Tab
+        firmwareInfo={currentFirmware}
+        setCurrentFirmware={setCurrentFirmware}
+      ></Tab>
     </>
   );
 }
 
-function Tab({ firmwareInfo }) {
-  const tabData = [
-    { title: "批次管理" },
-    { title: "设备列表" },
-    { title: "固件信息" },
-  ];
+function Tab({ firmwareInfo, setCurrentFirmware }) {
+  const tabData = [{ title: "批次管理" }, { title: "固件信息" }];
 
   return (
-    <Tabs
-      tabs={tabData}
-      type="card"
-      onChange={(tab, index) => {
-        console.log("[tabs]", tab, index);
-      }}
-    >
+    <Tabs tabs={tabData} type="card" style={{ marginTop: "0.1rem" }}>
       <UpgradeBatch firmwareInfo={firmwareInfo}></UpgradeBatch>
-      <div>TODO</div>
-      <FirmwareInfoComp firmwareInfo={firmwareInfo}></FirmwareInfoComp>
+      <FirmwareInfoComp
+        firmwareInfo={firmwareInfo}
+        setCurrentFirmware={setCurrentFirmware}
+      ></FirmwareInfoComp>
     </Tabs>
   );
 }
 //* 固件信息
-function FirmwareInfoComp({ firmwareInfo }) {
-  const handleChangeInfo = () => {};
+function FirmwareInfoComp({ firmwareInfo, setCurrentFirmware }) {
+  const [visible, setVisible] = useState(false);
+  const handleChangeInfo = () => {
+    setVisible(!visible);
+  };
   return (
     <>
-      <div>
-        <h1>固件信息</h1>
-        <Button onClick={handleChangeInfo}>编辑</Button>
-      </div>
+      <TitleWithButton
+        title={"固件信息"}
+        handleClick={handleChangeInfo}
+      ></TitleWithButton>
+
       <Cell.Group>
-        <Cell label="名称" text={firmwareInfo.name}></Cell>
-        <Cell label="创建者" text={firmwareInfo.createdBy.fullName}></Cell>
-        <Cell label="创建时间" text={firmwareInfo.createdBy.activatedAt}></Cell>
-        <Cell label="描述" text={firmwareInfo.description}></Cell>
+        <Cell label="名称" text={firmwareInfo.name} bordered={false}></Cell>
+        <Cell
+          label="创建者"
+          text={firmwareInfo.createdBy.fullName}
+          bordered={false}
+        ></Cell>
+        <Cell
+          label="创建时间"
+          text={firmwareInfo.createdBy.activatedAt}
+          bordered={false}
+        ></Cell>
+        <Cell
+          label="描述"
+          text={firmwareInfo.description}
+          bordered={false}
+        ></Cell>
       </Cell.Group>
+      <EditFirmwarePopup
+        firmwareInfo={firmwareInfo}
+        setCurrentFirmware={setCurrentFirmware}
+        visible={visible}
+        setVisible={setVisible}
+      ></EditFirmwarePopup>
     </>
   );
 }
@@ -137,14 +183,27 @@ function FirmwareInfoComp({ firmwareInfo }) {
 function UpgradeBatch({ firmwareInfo }) {
   const [batchList, setBatchList] = useState([]);
   const navigate = useNavigate();
+  const { productId } = useParams();
   useEffect(() => {
     ListAllUbOfFirmware(firmwareInfo.product, firmwareInfo.id).then((data) => {
       setBatchList(data);
+    }).catch(error=>{
+      MyToast("error","获取更新列表失败")
     });
   }, []);
-
-  if (batchList.length === 0 || Object.keys(firmwareInfo).length === 0)
-    return <div>loading</div>;
+  function handleDel(batchId) {
+    DelUB(productId, batchId).then((res) => {
+      let temp = batchList.filter((data) => {
+        return data.id !== batchId;
+      });
+      setBatchList([...temp]);
+      MyToast("success", "删除成功");
+    }).catch(error=>{
+      MyToast("error","删除更新失败")
+    });
+  }
+  // if (batchList.length === 0 || Object.keys(firmwareInfo).length === 0)
+  //   return <div>loading</div>;
   let typeList = [0, "批量升级"];
   let statusList = ["", "待升级", "升级中", "已完成", "已取消"];
   let batchListComp = batchList.map((data, idx) => {
@@ -153,25 +212,30 @@ function UpgradeBatch({ firmwareInfo }) {
       <Fragment key={idx}>
         <tr>
           <td>
-            {typeList[data.type]}
+            <span className="tr-text">{typeList[data.type]}</span>
             <Button
               onClick={() =>
                 navigate(
                   `/product/${firmwareInfo.product}/firmware/${firmwareInfo.id}/upgradebatch/${data.id}`
                 )
               }
+              className="tr-button"
             >
               查看
             </Button>
           </td>
           <td>
-            {statusList[data.status]}
-            <Button>删除</Button>
+            <span className="tr-text">{statusList[data.status]}</span>
+            <Dialog
+              content={"删除"}
+              handleDel={() => handleDel(data.id)}
+            ></Dialog>
           </td>
         </tr>
       </Fragment>
     );
   });
+  if (batchListComp.length === 0) batchListComp = <CellNodata></CellNodata>;
   return (
     <>
       <Button
@@ -180,8 +244,9 @@ function UpgradeBatch({ firmwareInfo }) {
             `/product/${firmwareInfo.product}/firmware/${firmwareInfo.id}/upgrade`
           )
         }
+        style={{ marginTop: "0.2rem" }}
       >
-        批次升级
+        批量升级
       </Button>
       <table className="table">
         <thead className="TrTable">
@@ -193,5 +258,60 @@ function UpgradeBatch({ firmwareInfo }) {
         <tbody>{batchListComp}</tbody>
       </table>
     </>
+  );
+}
+
+function EditFirmwarePopup({
+  firmwareInfo,
+  setCurrentFirmware,
+  visible,
+  setVisible,
+}) {
+  const { productId, firmwareId } = useParams();
+  const [record, setRecord] = useState({ ...firmwareInfo });
+  function handleConfirm() {
+    if ("name" in record && "description" in record && record.name.length > 0) {
+      FirmwareApi.UpdateFirmware(productId, firmwareId, record).then((res) => {
+        setCurrentFirmware({ ...record });
+        setVisible(!visible);
+        MyToast("success", "修改成功");
+      }).catch(error=>{
+        MyToast("error","更新固件详情失败")
+      });
+    } else {
+      MyToast("warn", "固件名称不可为空");
+    }
+  }
+  return (
+    <PopupSwiper
+      visible={visible}
+      close={() => setVisible(!visible)}
+      direction="bottom"
+      allowSwipeDirections={["right", "bottom"]}
+    >
+      <Cell className="popup-title">修改固件信息</Cell>
+      <Input
+        label="固件名称"
+        required
+        defaultValue={firmwareInfo.name}
+        onChange={(e) => {
+          setRecord({ ...record, name: e.target.value });
+        }}
+      ></Input>
+      <Input
+        label="版本号"
+        required
+        disabled
+        defaultValue={firmwareInfo.version}
+      ></Input>
+      <Input
+        label="描述"
+        defaultValue={firmwareInfo.description}
+        onChange={(e) => {
+          setRecord({ ...record, description: e.target.value });
+        }}
+      ></Input>
+      <Button onClick={handleConfirm}>确认</Button>
+    </PopupSwiper>
   );
 }

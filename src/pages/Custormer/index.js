@@ -9,16 +9,22 @@ import {
   Input,
   Textarea,
   Avatar,
+  PopupSwiper,
 } from "@arco-design/mobile-react";
 import "@/styles/mapping.less";
 import MyDropDown from "@/components/Dropdown/dropdown";
 import MyToast from "@/components/Toast/toast";
 import MyTopBar from "@/components/TopBar/TopBar";
 import { useNavigate } from "react-router-dom";
-import { GetOneCust } from "@/services/Custormer";
+import { GetOneCust, UpdateCustormer } from "@/services/Custormer";
 import Pop from "./component/Popupswiper";
 import { AuthContext } from "@/context/AuthContext";
 import { ReactComponent as IconGetBack } from "@/assets/icon/getBack.svg";
+import { bgColor } from "@/styles/buttonColorConfig";
+import TitleWithButton from "@/components/TopBar/titleWithButton";
+import { ReactComponent as IconUser } from "@/assets/icon/addUser.svg";
+import Occupancy from "@/components/function/occupancy";
+import EditInfo from "./component/editInfo";
 export default function Custormer({}) {
   const navigate = useNavigate();
   const { currentProduct } = useContext(ProductContext);
@@ -33,6 +39,7 @@ export default function Custormer({}) {
             onClick={() =>
               navigate(`/product/${currentProduct.id}?tab=custormer`)
             }
+            bgColor={bgColor}
           ></Button>
         }
         content={currentCustormer.name}
@@ -48,29 +55,69 @@ function UserInfo({}) {
   const { currentCustormer, setCurrentCustormer } =
     useContext(CustormerContext);
   const [custInfo, setCustInfo] = useState({});
-  const handleChange = () => {};
+  const [visible, setVisible] = useState(false);
   useEffect(() => {
     GetOneCust(currentCustormer.id).then((data) => {
       setCustInfo(data);
       //   console.log(data);
-    });
+    }).catch(error=>{
+      MyToast("error","获取用户信息失败")
+    });;
   }, []);
+
+  const handleChange = () => {
+    setVisible(!visible);
+  };
   return (
     <>
-      <div>
-        <span>客户信息</span>
-        <Button onClick={handleChange}>编辑</Button>
-      </div>
+      <TitleWithButton
+        title={"客户信息"}
+        handleClick={handleChange}
+      ></TitleWithButton>
+
       <Cell.Group>
-        <Cell label="名称" text={custInfo.name}></Cell>
-        <Cell label="地址" text={custInfo.address}></Cell>
-        <Cell label="联系人" text={custInfo.contact}></Cell>
-        <Cell label="电话" text={custInfo.phone}></Cell>
-        <Cell label="描述" text={custInfo.description}></Cell>
+        <Cell
+          label="名称"
+          text={custInfo.name}
+          bordered={false}
+          className="cell-userInfo"
+        ></Cell>
+        <Cell
+          label="地址"
+          bordered={false}
+          text={custInfo.address}
+          className="cell-userInfo"
+        ></Cell>
+        <Cell
+          label="联系人"
+          bordered={false}
+          text={custInfo.contact}
+          className="cell-userInfo"
+        ></Cell>
+        <Cell
+          label="电话"
+          bordered={false}
+          text={custInfo.phone}
+          className="cell-userInfo"
+        ></Cell>
+        <Cell
+          label="描述"
+          bordered={false}
+          text={custInfo.description}
+          className="cell-userInfo"
+        ></Cell>
       </Cell.Group>
+      <EditInfo
+        custInfo={custInfo}
+        setCustInfo={setCustInfo}
+        visible={visible}
+        setVisible={setVisible}
+      ></EditInfo>
     </>
   );
 }
+
+function editInfo({ visible, setVisible }) {}
 function UserAccount({}) {
   const { currentCustormer, setCurrentCustormer } =
     useContext(CustormerContext);
@@ -81,12 +128,15 @@ function UserAccount({}) {
   useEffect(() => {
     ListUsers(currentCustormer.id).then((data) => {
       setUserList(data);
+    }).catch(error=>{
+      MyToast("error","获取用户列表失败")
     });
   }, []);
 
   const users = userList.map((data, idx) => {
     return (
       <Avatar
+        className="cell-userInfo"
         key={idx}
         size="large"
         src={data.avatar}
@@ -102,17 +152,13 @@ function UserAccount({}) {
   });
   return (
     <>
-      <div>
-        <span>用户账号</span>
-        <Button
-          onClick={() => {
-            setVisible(!visible);
-          }}
-        >
-          添加用户
-        </Button>
-        {users}
-      </div>
+      <TitleWithButton
+        title="用户账号"
+        handleClick={() => setVisible(!visible)}
+        ButtonIcon={<IconUser></IconUser>}
+      ></TitleWithButton>
+
+      {users}
       <Pop
         custInfo={selectUser}
         visible={visible}

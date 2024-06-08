@@ -1,4 +1,3 @@
-import MyTabBar from "@/components/TabBar/TabBar";
 import MyTopBar from "@/components/TopBar/TopBar";
 
 import MyPopover from "@/components/Popover/Popover";
@@ -12,7 +11,7 @@ import { Cell, Input } from "@arco-design/mobile-react";
 
 import { IconQuestionCircle } from "@arco-design/mobile-react/esm/icon";
 import "@/styles/home.less";
-import "@/styles/select.less"
+import "@/styles/select.less";
 import { ReactComponent as OrganizationIcon } from "@/assets/icon/organization.svg";
 import { ReactComponent as UserIcon } from "@/assets/icon/user.svg";
 import { ReactComponent as ProduIcon } from "@/assets/icon/pruduction.svg";
@@ -33,16 +32,15 @@ import CreateOrg from "@/components/PopupSwiper/CreateOrg";
 import MyToast from "@/components/Toast/toast";
 import InfoDrawer from "@/components/InfoDrawer/InfoDrawer";
 
-export default function MainPage() {
+export default function MainPage({ activeIndex }) {
   const [statis, setStatis] = useState({});
-
+  const [organizationStatis, setOrganizationStatis] = useState({});
   const { current_Organization, OrganizationList, setOrganizationList } =
     useContext(OrganizationContext);
   //获取到设置的状态
   const { authState } = useContext(AuthContext);
   const token = authState.token;
   const User = authState.user;
-  console.log(authState);
   let production = new Array(4).fill(0);
   let device = new Array(4).fill(0);
   useEffect(() => {
@@ -51,21 +49,43 @@ export default function MainPage() {
     if (User !== null && Object.keys(User).length > 0) {
       // console.log("User.roles.role", User.roles.role);
       if (User.roles[0].role === 1)
-        GetStatsByWebAdmin(token).then((data) => {
-          setStatis(data);
-        });
+        GetStatsByWebAdmin(token)
+          .then((data) => {
+            setStatis(data);
+          })
+          .catch((error) => {
+            MyToast("error", "获取数据失败");
+          });
       else if (User.roles[0].role / 10 === 1) {
-        GetStatsOfOrg(token).then((data) => {
-          setStatis(data);
-        });
+        GetStatsOfOrg(token)
+          .then((data) => {
+            setStatis(data);
+          })
+          .catch((error) => {
+            MyToast("error", "获取数据失败");
+          });
       } else {
-        GetStatsOfCust(token).then((data) => {
-          setStatis(data);
-        });
+        GetStatsOfCust(token)
+          .then((data) => {
+            setStatis(data);
+          })
+          .catch((error) => {
+            MyToast("error", "获取数据失败");
+          });
       }
     }
   }, [authState]);
+  useEffect(() => {
+    GetStatsOfOrg(current_Organization.id).then((data) => {
+      console.log(data);
+      setOrganizationStatis(data);
+    }).catch(error=>{
+      MyToast("error","获取数据失败")
+    });
+  }, [current_Organization.id]);
   //* 渲染首页数据
+  let productSum = 0;
+  let deviceSum = 0;
   if ("product" in statis && "device" in statis) {
     statis.product.map((e) => {
       return (production[e.status] = e.num);
@@ -73,12 +93,20 @@ export default function MainPage() {
     statis.device.map((e) => {
       device[e.status] = e.num;
     });
+    organizationStatis.product.map((data) => {
+      productSum += data.num;
+    });
+    organizationStatis.device.map((data) => {
+      deviceSum += data.num;
+    });
   }
 
   return (
-    <>
+    <div className="Not-cover">
       {/* 添加组织栏 */}
-      <MyTopBar LeftChildren={<InfoDrawer></InfoDrawer>}>
+      <MyTopBar
+        LeftChildren={<InfoDrawer activeIndex={activeIndex}></InfoDrawer>}
+      >
         <CreateButton></CreateButton>
       </MyTopBar>
       {current_Organization.id !== "firstPage" ? (
@@ -89,44 +117,38 @@ export default function MainPage() {
                 label={
                   <div className="cellIconAndText">
                     客户总数
-                    <MyPopover content={"该组织所有客户数量"}>
-                      <IconQuestionCircle className="iconInfoFpage"></IconQuestionCircle>
-                    </MyPopover>
+                    <MyPopover content={"该组织所有客户数量"}></MyPopover>
                   </div>
                 }
                 bordered={false}
                 className="myCell content"
               >
-                <div>{123}</div>
+                <div>{"customer" in statis && statis.customer.toString()}</div>
               </Cell>
 
               <Cell
                 label={
                   <div className="cellIconAndText">
                     产品总数
-                    <MyPopover content={"该组织所有产品总数"}>
-                      <IconQuestionCircle className="iconInfoFpage"></IconQuestionCircle>
-                    </MyPopover>
+                    <MyPopover content={"该组织所有产品总数"}></MyPopover>
                   </div>
                 }
                 bordered={false}
                 className="myCell content"
               >
-                <div>{11}</div>
+                <div>{productSum}</div>
               </Cell>
               <Cell
                 label={
                   <div className="cellIconAndText">
                     设备总数
-                    <MyPopover content={"该组织所有设备总数"}>
-                      <IconQuestionCircle className="iconInfoFpage"></IconQuestionCircle>
-                    </MyPopover>
+                    <MyPopover content={"该组织所有设备总数"}></MyPopover>
                   </div>
                 }
                 bordered={false}
                 className="myCell content"
               >
-                <div>{22}</div>
+                <div>{deviceSum}</div>
               </Cell>
             </Cell.Group>
           </div>
@@ -195,8 +217,7 @@ export default function MainPage() {
           </Cell.Group>
         </>
       )}
-      <MyTabBar></MyTabBar>
-    </>
+    </div>
   );
 }
 
@@ -219,7 +240,6 @@ function CreateButton({}) {
         label={value}
         required={requiredIdx.indexOf(idx) !== -1 ? true : false}
         onChange={(e) => {
-          console.log(value);
           addData.current[keysInEng[idx]] = e.target.value;
         }}
         clearable={true}
@@ -228,11 +248,17 @@ function CreateButton({}) {
     );
   });
   const handleConfirm = () => {
-    CreateOrganization(addData.current, token).then((data) => {
-      addData.current = {};
-      setOrganizationList([...OrganizationList, data]);
-      MyToast("success", "创建成功");
-    });
+    CreateOrganization(addData.current, token)
+      .then((data) => {
+        addData.current = {};
+        console.log(data);
+        setOrganizationList([...OrganizationList, data]);
+        MyToast("success", "创建成功");
+      })
+      .catch((error) => {
+        console.log(error);
+        MyToast("error", "创建失败");
+      });
   };
 
   return (

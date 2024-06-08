@@ -4,7 +4,7 @@ const cors = require("cors");
 app.use(express.json());
 app.use(cors({ origin: "http://localhost:3000" }));
 
-
+const path = require("path");
 
 // 处理 POST 请求 /auth/signin 路径
 app.post("/auth/signin", (req, res) => {
@@ -47,6 +47,19 @@ app.get("/organizations", (req, res) => {
   // console.log(data);
   res.json(data); // 将数据以 JSON 格式返回
 });
+
+function generateRandomString(length) {
+  const characters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  let randomString = "";
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length);
+    randomString += characters[randomIndex];
+  }
+
+  return randomString;
+}
 var response = [
   {
     id: "6bd185f99fb725b27d8edc12",
@@ -77,21 +90,8 @@ var response = [
     role: 21,
   },
 ];
-function generateRandomString(length) {
-  const characters =
-    "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  let randomString = "";
-
-  for (let i = 0; i < length; i++) {
-    const randomIndex = Math.floor(Math.random() * characters.length);
-    randomString += characters[randomIndex];
-  }
-
-  return randomString;
-}
-
 app.get("/user", (req, res) => {
-  console.log(req.query)
+  console.log(req.query);
 
   console.log(response);
   return res.status(200).send(response);
@@ -148,10 +148,21 @@ app.post("/user", (req, res) => {
   // console.log("request organizations");
   console.log(req.body);
   var data = req.body;
-  data.id = generateRandomString(20)
-  response = [...response,data] 
+  data.id = generateRandomString(20);
+  response = [...response, data];
   console.log(response);
   res.json(data); // 将数据以 JSON 格式返回
+});
+app.get("/file", (req, res) => {
+  const filePath = path.join(__dirname, "README.md");
+
+  // 发送文件
+  res.sendFile(filePath, (err) => {
+    if (err) {
+      console.error("File send failed:", err);
+      res.status(500).send("File send failed");
+    }
+  });
 });
 // 启动服务器，监听端口
 const PORT = process.env.PORT || 8080;

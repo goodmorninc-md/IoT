@@ -1,6 +1,3 @@
-import MyTabBar from "@/components/TabBar/TabBar";
-import MyTopBar from "@/components/TopBar/TopBar";
-
 import MyPopover from "@/components/Popover/Popover";
 
 import Tabs from "./TabsControl";
@@ -12,11 +9,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { Cell, Input } from "@arco-design/mobile-react";
 
 import { IconQuestionCircle } from "@arco-design/mobile-react/esm/icon";
-import {
-  CreateOrganization,
-  GetOneOrganization,
-} from "@/services/Organization";
-
+import { GetOneOrganization } from "@/services/Organization";
 
 export function OrganizationStatistic() {
   const { current_Organization, OrganizationList, setOrganizationList } =
@@ -27,7 +20,7 @@ export function OrganizationStatistic() {
   const role =
     authState.user === null ? -10 : authState.user.roles[0].role / 10;
   useEffect(() => {
-    GetOneOrganization(current_Organization.id, token).then((data) => {});
+    // GetOneOrganization(current_Organization.id, token).then((data) => {});
   }, []);
   return (
     <>
@@ -37,9 +30,7 @@ export function OrganizationStatistic() {
             label={
               <div className="cellIconAndText">
                 客户总数
-                <MyPopover content={"该组织所有客户数量"}>
-                  <IconQuestionCircle className="iconInfoFpage"></IconQuestionCircle>
-                </MyPopover>
+                <MyPopover content={"该组织所有客户数量"}></MyPopover>
               </div>
             }
             bordered={false}
@@ -52,9 +43,7 @@ export function OrganizationStatistic() {
             label={
               <div className="cellIconAndText">
                 产品总数
-                <MyPopover content={"该组织所有产品总数"}>
-                  <IconQuestionCircle className="iconInfoFpage"></IconQuestionCircle>
-                </MyPopover>
+                <MyPopover content={"该组织所有产品总数"}></MyPopover>
               </div>
             }
             bordered={false}
@@ -66,9 +55,7 @@ export function OrganizationStatistic() {
             label={
               <div className="cellIconAndText">
                 设备总数
-                <MyPopover content={"该组织所有设备总数"}>
-                  <IconQuestionCircle className="iconInfoFpage"></IconQuestionCircle>
-                </MyPopover>
+                <MyPopover content={"该组织所有设备总数"}></MyPopover>
               </div>
             }
             bordered={false}

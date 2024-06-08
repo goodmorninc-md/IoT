@@ -1,19 +1,15 @@
-import MyTabBar from "@/components/TabBar/TabBar";
 import MyTopBar from "@/components/TopBar/TopBar";
 import CreateProductButton from "./components/CreateProduct";
 import InfoDrawer from "@/components/InfoDrawer/InfoDrawer";
 import ProductList from "./components/ProductList";
-import "@/styles/home.less";
-import "@/styles/product.less";
 
-export default function Product() {
+export default function Product({activeIndex}) {
   return (
-    <>
-      <MyTopBar LeftChildren={<InfoDrawer></InfoDrawer>}>
+    <div className="Not-cover">
+      <MyTopBar LeftChildren={<InfoDrawer activeIndex={activeIndex}></InfoDrawer>}>
         <CreateProductButton></CreateProductButton>
       </MyTopBar>
       <ProductList></ProductList>
-      <MyTabBar activeIndex={1}></MyTabBar>
-    </>
+    </div>
   );
 }

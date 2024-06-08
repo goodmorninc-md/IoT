@@ -4,45 +4,42 @@ import {
   SearchBar,
   Input,
   Textarea,
-  Tabs,
+  LoadMore,
+  Pagination,
 } from "@arco-design/mobile-react";
 import { ProductContext } from "@/context/Product";
-import { useContext, useEffect, useState } from "react";
-import {
-  DelOneProduct,
-  GetOneProduct,
-  GetProductListByOrg,
-  UpdateOneProduct,
-} from "@/services/Product";
-import Uploader from "./uploader";
+import { useContext, useEffect, useRef, useState } from "react";
+import { UpdateOneProduct } from "@/services/Product";
+// import Uploader from "./uploader";
 import Info from "@/components/PopupSwiper/Update";
+import CellNodata from "@/components/InfoList/lackData";
+import MyToast from "@/components/Toast/toast";
 
-export default function ProductInfos({}) {
+export default function ProductInfos({ activeIndex }) {
   const { currentProduct, setCurrentProduct, productList } =
     useContext(ProductContext);
 
-  const [searchText, setSearchText] = useState("");
+  // const [searchText, setSearchText] = useState("");
   const [searchContent, setSearchContent] = useState({ ...currentProduct });
-  const [editStatus, setEditStatus] = useState(false);
-
-  const EditButton = <Button>编辑</Button>;
-
-  const Trs = VaraibleList(
-    currentProduct,
-    setCurrentProduct,
-    searchContent,
-    setSearchContent
+  const Trs = activeIndex === 1 && (
+    <VaraibleList
+      currentProduct={currentProduct}
+      setCurrentProduct={setCurrentProduct}
+      searchContent={searchContent}
+      setSearchContent={setSearchContent}
+      // searchText={searchText}
+    ></VaraibleList>
   );
   return (
     <Cell.Group>
-      <Uploader></Uploader>
-      <Search
+      {/* <Uploader></Uploader> */}
+      {/* <Search
         currentProduct={currentProduct}
         searchContent={searchContent}
         setSearchContent={setSearchContent}
         searchText={searchText}
         setSearchText={setSearchText}
-      />
+      /> */}
       <table className="table">
         <thead className="TrTable">
           <tr>
@@ -52,92 +49,125 @@ export default function ProductInfos({}) {
         </thead>
         <tbody>{Trs}</tbody>
       </table>
-
-      {EditButton}
     </Cell.Group>
-  );
-}
-function Search({
-  currentProduct,
-  searchContent,
-  setSearchContent,
-  setSearchText,
-}) {
-  const handleSearchChange = (e) => {
-    let newSpecification = currentProduct.specification.filter((value) => {
-      return value.name.indexOf(e.target.value) !== -1;
-    });
-    setSearchContent({ ...searchContent, specification: newSpecification });
-    setSearchText(e.target.value);
-  };
-  return (
-    <SearchBar
-      shape="square"
-      textAlign="center"
-      onChange={handleSearchChange}
-    />
   );
 }
 
 //* Infos list
-function VaraibleList(
+function VaraibleList({
   currentProduct,
   setCurrentProduct,
   searchContent,
   setSearchContent,
-  searchText
-) {
+  // searchText,
+}) {
   //* record记录的是specification的内容
   const [record, setRecord] = useState({});
   const [currentVariable, setCurrentVariable] = useState(0);
-
+  const [currentPage, setCurrentPage] = useState(0);
+  const loadMoreRef = useRef(null);
+  const [showList, setShowList] = useState([]);
+  const showMore = useRef(0);
+  // if (Object.keys(searchContent).length === 0) return <CellNodata></CellNodata>;
+  const pageSize = 10;
   //* 每个变量的详细值列表
-  const specification =
-    searchContent.specification !== undefined
-      ? searchContent.specification
-      : [];
+  useEffect(() => {
+    if (searchContent.specification.length > pageSize)
+      showMore.current += pageSize;
+    setShowList(searchContent.specification.slice(0, pageSize));
+  }, []);
+  // useEffect(() => {
+  //   // console.log("none");
+  //   // console.log(searchContent.specification.slice(0, pageSize).length);
+  //   setShowList(searchContent.specification.slice(0, pageSize));
+  //   showMore.current = 0;
+  //   console.log(showMore.current);
+  //   // loadMoreRef.current.changeStatus("prepare", "scrollEnd");
+  // }, [searchText]);
+  let flag = false;
+  if (showList.length === 0) flag = true;
+
+  function checkRequire() {
+    if (
+      "specification" in record &&
+      "dataType" in record.specification &&
+      "specs" in record.specification &&
+      "min" in record.specification.dataType.specs &&
+      "max" in record.specification.dataType.specs
+    ) {
+      if (
+        record.specification.dataType.specs.min >=
+        record.specification.dataType.specs.max
+      )
+        return false;
+      return true;
+    }
+    return true;
+  }
   function handleChange() {
-    console.log(record);
-    UpdateOneProduct(currentProduct.id, record).then((data) => {
-      console.log(data);
-      console.log("currentVariable", currentVariable);
-      let newSpecification = specification.map((value, index) => {
-        if (index === currentVariable) return record;
-        else return value;
-      });
-      console.log(newSpecification);
-      setCurrentProduct({
-        ...currentProduct,
-        specification: newSpecification,
-      });
-      newSpecification = currentProduct.specification.filter((value) => {
-        return value.name.indexOf(searchText) !== -1;
-      });
-      setSearchContent({ ...searchContent, specification: newSpecification });
-    });
+    if (checkRequire()) {
+      // console.log(currentVariable);
+      UpdateOneProduct(currentProduct.id, record)
+        .then((data) => {
+          let newSpecification = currentProduct.specification.map(
+            (value, index) => {
+              if (index === currentVariable) return record;
+              else return value;
+            }
+          );
+          setCurrentProduct({
+            ...currentProduct,
+            specification: newSpecification,
+          });
+          newSpecification = searchContent.specification.map((value, index) => {
+            if (index === currentVariable) console.log("===", record);
+            if (index === currentVariable) return record;
+            else return value;
+          });
+          setSearchContent({
+            ...searchContent,
+            specification: newSpecification,
+          });
+          newSpecification = showList.map((value, index) => {
+            if (index === currentVariable) console.log("===", record);
+            if (index === currentVariable) return record;
+            else return value;
+          });
+          setShowList([...newSpecification]);
+          MyToast("success", "修改成功");
+        })
+        .catch((error) => {
+          MyToast("error", "更新失败");
+        });
+    }
   }
   function handleDelete() {
     //* 这里应该是修改物编量
-    UpdateOneProduct(currentProduct.id).then((data) => {
-      let newSpecification = specification.filter((value, index) => {
-        return index !== currentVariable;
+    UpdateOneProduct(currentProduct.id)
+      .then((data) => {
+        let newSpecification = currentProduct.specification.filter(
+          (value, index) => {
+            return index !== currentVariable;
+          }
+        );
+        setCurrentProduct({
+          ...currentProduct,
+          specification: newSpecification,
+        });
+        newSpecification = searchContent.specification.filter((value, idx) => {
+          return idx !== currentVariable;
+        });
+        setSearchContent({ ...searchContent, specification: newSpecification });
+      })
+      .catch((error) => {
+        MyToast("error", "更新失败");
       });
-      setCurrentProduct({
-        ...currentProduct,
-        specification: newSpecification,
-      });
-      newSpecification = currentProduct.specification.filter((value) => {
-        return value.name.indexOf(searchText) !== -1;
-      });
-      setSearchContent({ ...searchContent, specification: newSpecification });
-    });
   }
 
-  const valuesMap = specification.map((data, idx) => {
+  const valuesMap = showList.map((data, idx) => {
     //* 定制详细信息,data是每一个变量
-    const infosEle = infosEles(data);
+    const infosEle = infosEles(record);
     const UpdateChild = UpdateChildren(data, record, setRecord);
-    // console.log(data);
     //* info传入的是specification的值
     return (
       <Info
@@ -158,36 +188,76 @@ function VaraibleList(
       </Info>
     );
   });
-
-  return valuesMap;
+  function getData(callback) {
+    // console.log("getData");
+    // console.log(showList.length, searchContent.specification.length);
+    setTimeout(() => {
+      if (showMore.current <= searchContent.specification.length) {
+        setShowList(
+          searchContent.specification.slice(
+            0,
+            currentPage * pageSize + pageSize
+          )
+        );
+        setCurrentPage(currentPage + 1);
+        showMore.current += 10;
+        callback("prepare");
+      } else {
+        // console.log(showMore.current);
+        callback("nomore");
+      }
+    }, 1000);
+  }
+  return (
+    <>
+      {flag ? <CellNodata></CellNodata> : valuesMap}
+      <LoadMore
+        ref={loadMoreRef}
+        style={{ paddingTop: 16, paddingBottom: 44 }}
+        getData={getData}
+        threshold={0}
+        onStatusChange={(st, scene) => {
+          // console.log("change", st, scene);
+        }}
+        changeStatus={(e) => {
+          console.log(e);
+        }}
+      />
+      {/* <Pagination
+        current={currentPage}
+        total={currentProduct.specification.length}
+        icon
+        onChange={({ current }) => setCurrentPage(current)}
+      /> */}
+    </>
+  );
 }
-
+//*弹窗中的信息
 const infosEles = (info) => {
+  if (Object.keys(info).length === 0) return <CellNodata></CellNodata>;
   const dataType = info.dataType.type;
   const specs = info.dataType.specs;
-  // console.log("specs", specs.precision);
   const info1 = (
     <>
-      <Cell label="变量名" text={info.name}></Cell>
-      <Cell label="标识符" text={info.variable}></Cell>
-      <Cell label="数据类型" text={dataType}></Cell>
-      <Cell label="精度" text={specs.precision}></Cell>
+      <Cell label="变量名" text={info.name} bordered={false}></Cell>
+      <Cell label="标识符" text={info.variable} bordered={false}></Cell>
+      <Cell label="数据类型" text={dataType} bordered={false}></Cell>
+      <Cell label="精度" text={specs.precision} bordered={false}></Cell>
     </>
   );
   const specsEle = (
     <>
-      <div>
-        取值范围
+      <Cell label="取值范围" bordered={false}>
         <span>{specs.min}</span> - <span>{specs.max}</span>
-      </div>
-      <div>
-        单位
+      </Cell>
+      <Cell label="单位" bordered={false}>
         <span>{specs.unit}</span> <span>{specs.unitName}</span>
-      </div>
+      </Cell>
     </>
   );
   const des = (
     <Textarea
+      disabled
       prefix="Message"
       statisticsMaxlength={50}
       autosize
@@ -207,7 +277,7 @@ const infosEles = (info) => {
     </>
   );
 };
-
+//* 更新的框
 const UpdateChildren = (data, record, setRecord) => {
   const keys = [
     "变量名",
@@ -218,10 +288,8 @@ const UpdateChildren = (data, record, setRecord) => {
     "单位",
     "描述",
   ];
-  // console.log("UpdateData", record);
   if (Object.keys(record).length === 0) return <></>;
   const specs = record.dataType.specs;
-  const dataType = record.dataType.type;
   return (
     <>
       <Input
@@ -242,11 +310,12 @@ const UpdateChildren = (data, record, setRecord) => {
 
       <Input
         label={keys[3]}
-        defaultValue={specs.precision.toString()}
+        defaultValue={
+          specs.precision !== undefined ? specs.precision.toString() : ""
+        }
         onChange={(e) => setRecord({ ...record, precision: e.target.value })}
       ></Input>
-      <div>
-        <span>{keys[4]}</span>
+      <Cell label={keys[4]} style={{ height: "auto" }}>
         <Input
           defaultValue={specs.min}
           onChange={(e) =>
@@ -258,11 +327,8 @@ const UpdateChildren = (data, record, setRecord) => {
               },
             })
           }
-          append={
-            specs.min < specs.max ? <></> : <div>最小值必须大于最大值</div>
-          }
         ></Input>
-        <span>-</span>
+        <span>——</span>
         <Input
           defaultValue={specs.max}
           onChange={(e) =>
@@ -275,9 +341,8 @@ const UpdateChildren = (data, record, setRecord) => {
             })
           }
         ></Input>
-      </div>
-      <div>
-        <span>{keys[5]}</span>
+      </Cell>
+      <Cell label={keys[5]}>
         <Input
           defaultValue={specs.unit}
           onChange={(e) =>
@@ -290,7 +355,7 @@ const UpdateChildren = (data, record, setRecord) => {
             })
           }
         ></Input>
-        <span>-</span>
+        <span>——</span>
         <Input
           defaultValue={specs.unitName}
           onChange={(e) =>
@@ -303,7 +368,7 @@ const UpdateChildren = (data, record, setRecord) => {
             })
           }
         ></Input>
-      </div>
+      </Cell>
 
       <Textarea
         prefix="Message"
@@ -322,3 +387,39 @@ const UpdateChildren = (data, record, setRecord) => {
     </>
   );
 };
+
+// function Search({
+//   currentProduct,
+//   searchContent,
+//   setSearchContent,
+//   setSearchText,
+//   searchText,
+// }) {
+//   const searchRef = useRef();
+//   const handleSearchChange = (e) => {
+//     setSearchText(e.target.value);
+//     if (e.target.value.length === 0) {
+//       console.log("setSearchContent({ ...currentProduct })");
+//       return setSearchContent({ ...currentProduct });
+//     }
+//     let newSpecification = currentProduct.specification.filter((value) => {
+//       return value.name.indexOf(e.target.value) !== -1;
+//     });
+//     setSearchContent({ ...searchContent, specification: newSpecification });
+//   };
+//   function handleCancel(e) {
+//     setSearchContent({ ...currentProduct });
+//     setSearchText("");
+//   }
+//   return (
+//     <SearchBar
+//       shape="square"
+//       textAlign="center"
+//       onChange={handleSearchChange}
+//       onCancel={handleCancel}
+//       onClear={handleCancel}
+//       ref={searchRef}
+//       value={searchText}
+//     />
+//   );
+// }

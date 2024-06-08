@@ -1,4 +1,4 @@
-import MyTabBar from "@/components/TabBar/TabBar";
+
 import MyTopBar from "@/components/TopBar/TopBar";
 
 import MyPopover from "@/components/Popover/Popover";
@@ -24,11 +24,6 @@ import { ReactComponent as WrongIcon } from "@/assets/icon/wrong.svg";
 
 import { CreateOrganization } from "@/services/Organization";
 
-import {
-  GetStatsByWebAdmin,
-  GetStatsOfCust,
-  GetStatsOfOrg,
-} from "@/services/Statistic";
 import CreateOrg from "@/components/PopupSwiper/CreateOrg";
 import MyToast from "@/components/Toast/toast";
 import InfoDrawer from "@/components/InfoDrawer/InfoDrawer";
@@ -48,9 +43,6 @@ export default function MainPage() {
       <MyTopBar LeftChildren={<InfoDrawer></InfoDrawer>}>
         <CreateButton></CreateButton>
       </MyTopBar>
-
-      
-      <MyTabBar></MyTabBar>
     </>
   );
 }
@@ -74,7 +66,7 @@ function CreateButton({}) {
         label={value + ":"}
         required={requiredIdx.indexOf(idx) !== -1 ? true : false}
         onChange={(e) => {
-          console.log(value);
+          // console.log(value);
           addData.current[keysInEng[idx]] = e.target.value;
         }}
         clearable={true}

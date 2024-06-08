@@ -8,7 +8,7 @@ export default function MyRadio({ setRecord, record }) {
       layout="block"
       defaultValue={record.type}
       onChange={(value) => {
-        console.log(value);
+        // console.log(value);
         setRecord({ ...record, type: value });
       }}
     >

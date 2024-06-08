@@ -5,14 +5,16 @@ import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/User";
 import { AddUser, ListUsers } from "@/services/User";
 import { Input, Cell } from "@arco-design/mobile-react";
-import { IconArrowIn } from "@arco-design/mobile-react/esm/icon";
+import { IconDelete } from "@arco-design/mobile-react/esm/icon";
 import MyToast from "@/components/Toast/toast";
 import { ChangeUserInfo, DelUser } from "@/services/User";
 import CreateOrg from "@/components/PopupSwiper/CreateOrg";
 import Info from "@/components/PopupSwiper/Update.js";
 import { useNavigate } from "react-router-dom";
 import { ReactComponent as IconUser } from "@/assets/icon/addUser.svg";
-
+import { Dialog } from "@arco-design/mobile-react";
+import DialogDemo from "@/components/Popover/delConfirm";
+import CellNodata from "@/components/InfoList/lackData";
 const User = ({ currentSelect }) => {
   //** 需要一个record State来记录当前修改的信息，如果通过ref传给子组件，子组件不能对父组件进行修改 */
   //* 想通过UserList向父组件传信息，但是
@@ -31,10 +33,14 @@ const User = ({ currentSelect }) => {
   const navigate = useNavigate();
   //* 选择成员信息时，请求成员信息
   useEffect(() => {
-    ListUsers(token, current_Organization.id).then((data) => {
-      // console.log(data);
-      setUsersList(data);
-    });
+    ListUsers(token, current_Organization.id)
+      .then((data) => {
+        // console.log(data);
+        setUsersList(data);
+      })
+      .catch((error) => {
+        MyToast("error", "获取用户列表失败");
+      });
   }, [currentSelect]);
 
   try {
@@ -50,21 +56,44 @@ const User = ({ currentSelect }) => {
     };
 
     const handleClickTr = (e) => {
-      console.log(e);
       setCurrentSelectUser(e);
       navigate(`/user/${currentSelectUser.id}`);
     };
-    const usersListMap = recordUserList.map((e, idx) => {
+    const handleDel = (user) => {
+      // user.stopPropagation();
+      DelUser(user.id)
+        .then((res) => {
+          let newusersList = usersList.filter((e) => {
+            return e.id !== user.id;
+          });
+          setUsersList([...newusersList]);
+          MyToast("success", "删除成功");
+        })
+        .catch((error) => {
+          MyToast("error", "删除失败");
+        });
+    };
+    let usersListMap = recordUserList.map((e, idx) => {
       return (
-        <tr key={idx} onClick={() => handleClickTr(e)}>
-          <td>{e.fullName}</td>
-          <td>{e.phone}</td>
-          {/* <td>
-            <IconArrowIn style={{ display: "inline" }}></IconArrowIn>
-          </td> */}
-        </tr>
+        <>
+          {/* <tr key={idx} onClick={() => handleClickTr(e)}>
+            <td>{e.fullName}</td>
+            <td>{e.phone}</td>
+            <td>
+          <IconArrowIn style={{ display: "inline" }}></IconArrowIn>
+        </td>
+          </tr> */}
+          <Cell
+            label={<span style={{ color: "black" }}>{e.fullName}</span>}
+            desc={e.phone}
+            text={<DialogDemo handleDel={() => handleDel(e)} />}
+            showArrow
+            onClick={() => handleClickTr(e)}
+          ></Cell>
+        </>
       );
     });
+    if (usersListMap.length === 0) usersListMap = <CellNodata></CellNodata>;
     //* 添加成员页面
     let dataListMap = keys.map((value, idx) => {
       return (
@@ -96,20 +125,20 @@ const User = ({ currentSelect }) => {
         >
           {dataListMap}
         </CreateOrg>
-
-        <table className="table">
+        {usersListMap}
+        {/* <table className="table">
           <thead className="TrTable">
             <tr>
               <th>姓名</th>
               <th>电话</th>
             </tr>
           </thead>
-          <tbody>{usersListMap}</tbody>
-        </table>
+          <tbody></tbody>
+        </table> */}
       </>
     );
   } catch (error) {
-    console.log(error);
+    // console.log(error);
   }
 };
 

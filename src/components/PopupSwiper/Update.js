@@ -1,5 +1,5 @@
 import { PopupSwiper, Cell, Button } from "@arco-design/mobile-react";
-import { useState,  } from "react";
+import { useState } from "react";
 import { OrganizationContext } from "@/context/Organization";
 import { AuthContext } from "@/context/AuthContext";
 import { Input } from "@arco-design/mobile-react";
@@ -14,11 +14,11 @@ export default function Info({
   handleChange = null,
   record,
   setRecord,
-  content1="修改信息",
-  content2="删除用户",
-  infosEles=null,
+  content1 = "修改信息",
+  content2 = "删除用户",
+  infosEles = null,
   setCurrentVariable = null,
-  index=null
+  index = null,
 }) {
   const [visible, setVisible] = useState(false);
   const [update, setUpdate] = useState(false);
@@ -34,14 +34,16 @@ export default function Info({
   const handleClickTr = (e) => {
     setVisible(!visible);
     //****** 深引用 */
-    setRecord({...info})
-    if(setCurrentVariable!== null) setCurrentVariable(index)
+    setRecord({ ...info });
+    if (setCurrentVariable !== null) {
+      // console.log(index);
+      setCurrentVariable(index);
+    }
   };
   //* 用户的详细信息
   let eles = Object.keys(info).map((e, idx) => {
     return <Cell>{e + " : " + info[e]}</Cell>;
   });
-  
 
   //* 取消修改
   const handleCancelChange = () => {
@@ -52,7 +54,7 @@ export default function Info({
   let son =
     update === false ? (
       <>
-        {infosEles!==null?infosEles: eles}
+        {infosEles !== null ? infosEles : eles}
         <div className="PopupButtons">
           <Button
             onClick={() => {

@@ -3,11 +3,11 @@ import { Fragment, useContext, useEffect, useState } from "react";
 import { ListAllMapofProd, RemoveMapping } from "@/services/mapping";
 import { Button, Input, Textarea } from "@arco-design/mobile-react";
 import "@/styles/mapping.less";
-import MyDropDown from "@/components/Dropdown/dropdown";
 import MyToast from "@/components/Toast/toast";
 import { useNavigate } from "react-router-dom";
+import InfoList from "@/components/InfoList/infoList";
 
-export default function Mapping() {
+export default function Mapping({ activeIndex }) {
   const { currentProduct } = useContext(ProductContext);
   const [mappings, setMappings] = useState([]);
   const navigate = useNavigate();
@@ -17,11 +17,15 @@ export default function Mapping() {
   console.log(productId);
 
   useEffect(() => {
-    console.log("effect");
-    ListAllMapofProd(currentProduct.id).then((data) => {
-      setMappings(data);
-    });
-  }, []);
+    if (activeIndex === 2)
+      ListAllMapofProd(currentProduct.id)
+        .then((data) => {
+          setMappings(data);
+        })
+        .catch((error) => {
+          MyToast("error", "获取变量列表失败");
+        });
+  }, [activeIndex]);
   const Trs = MappingList(productId, mappings, setMappings, navigate);
   return (
     <>
@@ -29,71 +33,76 @@ export default function Mapping() {
         onClick={() => {
           navigate(`/product/${productId}/mapping/edit`);
         }}
+        className="tabs-under-button"
       >
         新建映射
       </Button>
-      <table className="table">
+      {Trs}
+      {/* <table className="table">
         <thead className="TrTable">
           <tr>
             <th>名称</th>
             <th>描述</th>
           </tr>
         </thead>
-        <tbody>{Trs}</tbody>
-      </table>
+        <tbody></tbody>
+      </table> */}
     </>
   );
 }
 
 //* 所有映射的列表
 function MappingList(productId, mappings, setMappings, navigate) {
-  const DelColorConfig = {
-    normal: "#ff0000",
-    active: "#fbe1d9",
-    disabled: "#FFF",
-  };
-
   function handleChange(currentMapId) {
-    navigate(
-      `/product/${productId}/mapping/edit?mapping=${currentMapId}`
-    );
+    navigate(`/product/${productId}/mapping/edit?mapping=${currentMapId}`);
   }
   function handleDelete(delMappingId) {
-    RemoveMapping(productId, delMappingId).then((data) => {
-      const newMappings = mappings.filter((e) => {
-        return e.id !== delMappingId;
+    RemoveMapping(productId, delMappingId)
+      .then((data) => {
+        const newMappings = mappings.filter((e) => {
+          return e.id !== delMappingId;
+        });
+        setMappings(newMappings);
+        MyToast("success", "删除成功");
+      })
+      .catch((error) => {
+        MyToast("error", "删除变量失败");
       });
-      setMappings(newMappings);
-      MyToast("success", "删除成功");
-    });
   }
 
-  let child = mappings.map((data, idx) => {
-    return (
-      <Fragment key={idx}>
-        <tr>
-          <td>{data.name}</td>
-          <td>{data.description}</td>
-          <div className="tr-div">
-            <Button
-              onClick={() => {
-                handleChange(data.id);
-              }}
-              style={{ width: "30%" }}
-            >
-              编辑
-            </Button>
-            <Button
-              onClick={() => handleDelete(data.id)}
-              bgColor={DelColorConfig}
-              style={{ width: "30%" }}
-            >
-              删除
-            </Button>
-          </div>
-        </tr>
-      </Fragment>
-    );
-  });
+  let child = (
+    <InfoList
+      InfoArray={mappings}
+      handleLook={(data) => handleChange(data.id)}
+      handleDel={(data) => handleDelete(data.id)}
+    ></InfoList>
+  );
   return child;
+  // mappings.map((data, idx) => {
+  //   return (
+  //     <Fragment key={idx}>
+  //       <tr>
+  //         <td>{data.name}</td>
+  //         <td>{data.description}</td>
+  //         <div className="tr-div">
+  //           <Button
+  //             onClick={() => {
+  //               handleChange(data.id);
+  //             }}
+  //             style={{ width: "30%" }}
+  //           >
+  //             编辑
+  //           </Button>
+  //           <Button
+  //             onClick={() => handleDelete(data.id)}
+  //             bgColor={DelColorConfig}
+  //             style={{ width: "30%" }}
+  //           >
+  //             删除
+  //           </Button>
+  //         </div>
+  //       </tr>
+  //     </Fragment>
+  //   );
+  // });
 }

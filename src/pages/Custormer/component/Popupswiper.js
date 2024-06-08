@@ -24,17 +24,18 @@ export default function Pop({
   const [newInfo, setNewInfo] = useState({ ...custInfo });
   const { currentCustormer } = useContext(CustormerContext);
   const navigate = useNavigate();
+  //* 登录判断
   const { authState } = useContext(AuthContext);
   const thisUser = authState.user;
   if (Object.keys(thisUser).length === 0) navigate("/login");
   useEffect(() => {
     setNewInfo({ ...custInfo });
   }, [custInfo]);
-
+  //* disabled可以当作新增和修改的标识
   let disabled = Object.keys(custInfo).length !== 0;
   const role = ["31", "32"];
 
-  if (disabled) console.log((newInfo.role % 10) - 1);
+  // if (disabled) console.log((newInfo.role % 10) - 1);
   const handleConfirm = () => {
     if (
       "fullName" in newInfo &&
@@ -63,8 +64,6 @@ export default function Pop({
   };
 
   const handleDelete = () => {
-    let roles = authState.user.roles;
-
     DelUser().then((data) => {
       setVisible(!visible);
       let newUserList = userList.filter((e) => {
@@ -76,7 +75,7 @@ export default function Pop({
   };
 
   let flag = false;
-  console.log(thisUser.roles);
+  // console.log(thisUser.roles);
   if (thisUser.roles !== undefined)
     thisUser.roles.map((data) => {
       if (data.role === 1) flag = true;
@@ -94,7 +93,7 @@ export default function Pop({
         defaultValue={disabled ? newInfo.fullName : ""}
         placeholder="请输入用户姓名"
         onChange={(e) => {
-          console.log(e.target.value);
+          // console.log(e.target.value);
           setNewInfo({ ...newInfo, fullName: e.target.value });
         }}
       ></Input>
@@ -150,17 +149,18 @@ export default function Pop({
           defaultChecked={disabled ? newInfo.banner : false}
           platform="android"
           onChange={(e) => {
-            console.log(e);
+            // console.log(e);
             setNewInfo({ ...newInfo, banner: e });
           }}
           onClick={() => console.log("click")}
         />
       </Cell>
-
-      <Button onClick={handleConfirm}>确认</Button>
-      <Button onClick={handleDelete} disabled={DelDisabled}>
-        移除账号
-      </Button>
+      <div className="popup-two-button">
+        <Button onClick={handleConfirm}>确认</Button>
+        <Button onClick={handleDelete} disabled={DelDisabled}>
+          移除账号
+        </Button>
+      </div>
     </Cell.Group>
   );
   return (

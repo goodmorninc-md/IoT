@@ -1,11 +1,67 @@
-.tr-button{
-    // width:40%;
-    display: block;
+.tr-button {
+  // width:40%;
+  display: block;
+  width: 1.5rem;
+}
+.tr-text {
+  width: 1.5rem; /* 设置容器宽度 */
+  overflow: hidden; /* 隐藏超出容器范围的内容 */
+  white-space: nowrap; /* 禁止文本换行 */
+  text-overflow: ellipsis; /* 溢出时显示省略号 */
+  display: inline-block; /* 确保是块级或内联块级元素 */
 }
 // .test{
 //     display: flex;
 // }
-.currentDetail{
-    text-align: center;
-    font-size: 0.6rem;
+.currentDetail {
+  text-align: center;
+  font-size: 0.6rem;
+}
+.div-text-button {
+  display: flex;
+  border-bottom: 0.02rem solid #dcdcdc;
+}
+.text-center {
+  flex: 1; /* 使其占据可用空间 */
+  text-align: center; /* 文本居中 */
+  font-size: 0.6rem;
+}
+.occupancy {
+  flex: 1; /* 使其占据可用空间 */
+}
+.cell-button {
+  flex: 1;
+  text-align: right;
+}
+.normal-button {
+  color: #1890ff;
+  background-color: transparent;
+}
+.button-icon {
+  color: black;
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+.diagram-div {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  font-size: 0.5rem;
+  margin: 0.3rem;
+  border-bottom: 0.01rem solid #dcdcdc;
+  // box-shadow: 0 0 10px rgba(0, 0, 0, 0.5); /* 10像素的黑色阴影 */
+}
+
+.cell-text-icon{
+  color: red;
+  margin-right: 0.2rem;
+  width: 0.5rem;
+  height: 0.5rem;
+}
+.mapping-list{
+  width: 1.5rem;
+  overflow: hidden; /* 隐藏超出容器范围的内容 */
+  white-space: nowrap; /* 禁止文本换行 */
+  text-overflow: ellipsis; /* 溢出时显示省略号 */
 }

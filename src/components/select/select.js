@@ -10,7 +10,7 @@ export default function Pickers({
   title = "",
 }) {
   const [singleVisible, setSingleVisible] = useState(false);
-
+  // console.log(singleList)
   // const single = useMemo(() => {
   //   return [
   //     [
@@ -31,7 +31,7 @@ export default function Pickers({
         label={label}
         showArrow
         onClick={() => {
-          setSingleVisible(true);
+          if (singleList[0].length !== 0) setSingleVisible(true);
         }}
       >
         {text}
@@ -46,7 +46,9 @@ export default function Pickers({
           setSingleVisible(false);
         }}
         onOk={(val, data) => {
-          handleChange(val[0]);
+          // console.log(val)
+          if(val)
+            handleChange(val[0]);
         }}
         disabled={disabled}
         title={title}

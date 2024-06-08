@@ -1,5 +1,4 @@
 import MyTopBar from "@/components/TopBar/TopBar";
-import MyPopover from "@/components/Popover/Popover";
 
 import { useState, useContext, useRef, useEffect } from "react";
 
@@ -7,7 +6,7 @@ import { OrganizationContext } from "@/context/Organization";
 import { AuthContext } from "@/context/AuthContext";
 import { UserContext } from "@/context/User";
 
-import { Button, Cell, Input, Switch } from "@arco-design/mobile-react";
+import { Button, Cell, Input, Switch, Dialog } from "@arco-design/mobile-react";
 
 import "@/styles/home.less";
 import { useNavigate } from "react-router-dom";
@@ -49,10 +48,19 @@ export default function MyMainPage() {
   ) : (
     <UserInfo currentSelectUser={currentSelectUser} />
   );
-
-  const handleDeleteUser = () => {
+  const handleDeleteConfirm = () => {
     MyToast("success", "删除成功");
     navigate("/");
+  };
+  const handleDeleteUser = () => {
+    Dialog.confirm({
+      title: "确认删除?",
+      children: "此操作不可撤销，请确认是否删除",
+      platform: "android",
+      okText: "确认",
+      cancelText: "取消",
+      onOk: () => handleDeleteConfirm(),
+    });
   };
 
   return (

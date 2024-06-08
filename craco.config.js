@@ -9,10 +9,12 @@ module.exports = {
         lessLoaderOptions: {
           lessOptions: {
             modifyVars: {
-              "@arcoblue-6": "#1890ff",
-              "@button-default-text-color": "#1890ff",
+              "@arcoblue-6": "rgb(24, 144, 255)",
+              "@button-default-text-color": "rgb(24, 144, 255)",
               "@cell-label-color" : "#86909c",
-              "@cell-text-color":"black"
+              "@cell-text-color":"black",
+              "@cell-content-font-size":"0.35rem",
+              "@checkbox-text-font-size":"0.4rem"
             }, // 可以在这里定义全局变量
             javascriptEnabled: true,
           },
